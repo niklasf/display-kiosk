@@ -84,8 +84,9 @@ class UnlockDialog(QDialog):
         buttonBox.addWidget(cancelButton)
         closeButton = QPushButton("Close")
         closeButton.clicked.connect(self.onCloseButtonClicked)
+        closeButton.setDefault(True)
         buttonBox.addWidget(closeButton)
-        layout.addLayout(buttonBox, 1, 1)
+        layout.addLayout(buttonBox, 1, 1, 1, 1, Qt.AlignRight)
 
         self.setLayout(layout)
         self.setWindowTitle("Unlock to close")
@@ -98,8 +99,14 @@ class UnlockDialog(QDialog):
             self.accept()
 
     def onSettingsButtonClicked(self):
-        SettingsDialog(self.settings, self).exec_()
-        self.reject()
+        if self.checkPassword():
+            SettingsDialog(self.settings, self).exec_()
+            self.reject()
+
+    def sizeHint(self):
+        # Make the dialog a little wider than nescessary.
+        normalSize = super(UnlockDialog, self).sizeHint()
+        return QSize(normalSize.width() + 50, normalSize.height())
 
 
 class SettingsDialog(QDialog):
