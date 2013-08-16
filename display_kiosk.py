@@ -73,7 +73,7 @@ class UnlockDialog(QDialog):
     def __init__(self, settings, parent):
         super(UnlockDialog, self).__init__(parent)
         self.settings = settings
-        self.settinsChanged = False
+        self.settingsChanged = False
 
         layout = QGridLayout()
 
