@@ -1,2 +1,3 @@
 display_kiosk.py usr/bin/
 debian/display_kiosk.desktop usr/share/applications/
+display_kiosk.svg usr/share/icons/hicolor/scalable/apps/
