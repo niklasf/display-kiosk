@@ -59,7 +59,11 @@ class SettingsDialog(QDialog):
         self.autoScrollDeltaBox.setSuffix("px")
         box.addWidget(self.autoScrollDeltaBox)
         box.addWidget(QLabel("every"))
-        box.addWidget(QLineEdit())
+        self.autoScrollIntervalBox = QSpinBox()
+        self.autoScrollIntervalBox.setMinimum(10)
+        self.autoScrollIntervalBox.setMaximum(100000)
+        self.autoScrollIntervalBox.setSuffix("ms")
+        box.addWidget(self.autoScrollIntervalBox)
         layout.addLayout(box)
 
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
