@@ -51,7 +51,7 @@ $ display-kiosk
 Autostarting on LXDE (used as the default desktop environment of the Raspberry Pi)
 ----------------------------------------------------------------------------------
 One practical use of display-kiosk is to display news on a public monitor
-connected to a [http://www.raspberrypi.org/](Raspberry Pi). Configure the
+connected to a [Raspberry Pi](http://www.raspberrypi.org/). Configure the
 Raspberry to automatically start a GUI session on startup. Then you can
 autostart display-kiosk via
 
@@ -63,5 +63,5 @@ $ ln -s /usr/share/applications/display-kiosk.desktop ~/.config/autostart/displa
 License
 -------
 display-kiosk is licensed under the GPL-3. See the
-[/debian/copyright](debian/copyright) file for details. Feel free to use, drop
+[debian/copyright](/debian/copyright) file for details. Feel free to use, drop
 an issue or submit a pull request.
