@@ -148,7 +148,7 @@ class UnlockDialog(QDialog):
             auth.acct_mgmt()
             return True
         except PAM.error, resp:
-            QMessageBox.warning(self, "Did not unlock", str(resp))
+            QMessageBox.warning(self, "Did not unlock", "%s [%d]" % (resp[0], resp[1]))
             self.passwordBox.selectAll()
             return False
         finally:
