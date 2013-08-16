@@ -1,0 +1,6 @@
+debian/display-kiosk.debhelper.log
+debian/display-kiosk.substvars
+debian/display-kiosk/
+debian/files
+
+*.swp
