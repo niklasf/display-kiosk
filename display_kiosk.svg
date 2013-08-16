@@ -15,7 +15,7 @@
    id="svg2985"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="New document 2">
+   sodipodi:docname="display_kiosk.svg">
   <defs
      id="defs2987">
     <linearGradient
@@ -49,14 +49,6 @@
     </filter>
     <filter
        inkscape:collect="always"
-       id="filter3905">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.077075096"
-         id="feGaussianBlur3907" />
-    </filter>
-    <filter
-       inkscape:collect="always"
        id="filter3985">
       <feGaussianBlur
          inkscape:collect="always"
@@ -71,9 +63,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.5"
-     inkscape:cx="58.572177"
-     inkscape:cy="32"
+     inkscape:zoom="7.7781746"
+     inkscape:cx="26.891547"
+     inkscape:cy="35.400585"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
@@ -91,7 +83,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -100,99 +92,19 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <rect
-       style="fill:#f4f4d1;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.89024323000000005px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter3985)"
-       id="rect2993-5"
-       width="49.050644"
-       height="36.455463"
-       x="8.201951"
-       y="14.499541" />
-    <rect
-       style="fill:#f4f4d1;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+       style="fill:#f4f4d1;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.84034103px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="rect2993"
-       width="41.090908"
-       height="54.909092"
-       x="11.818182"
-       y="5.272727"
-       transform="matrix(1.1937104,0,0,0.66392399,-5.72372,11.089761)" />
-    <text
-       xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;filter:url(#filter3855);font-family:Sans"
-       x="10.653811"
-       y="18.363636"
-       id="text3777"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan3779"
-         x="10.653811"
-         y="18.363636"
-         style="font-size:2px;text-align:start;text-anchor:start;stroke:none">Lorem ipsum dolor sit amet, consetetur</tspan><tspan
-         sodipodi:role="line"
-         x="10.653811"
-         y="20.863636"
-         style="font-size:2px;text-align:start;text-anchor:start;stroke:none"
-         id="tspan3781">sadipscing elitr, sed diam nonumy</tspan><tspan
-         sodipodi:role="line"
-         x="10.653811"
-         y="23.363636"
-         style="font-size:2px;text-align:start;text-anchor:start;stroke:none"
-         id="tspan3783">eirmod tempor invidunt ut labore et</tspan><tspan
-         sodipodi:role="line"
-         x="10.653811"
-         y="25.863636"
-         style="font-size:2px;text-align:start;text-anchor:start;stroke:none"
-         id="tspan3785">dolore magna aliquyam erat, sed</tspan><tspan
-         sodipodi:role="line"
-         x="10.653811"
-         y="28.363636"
-         style="font-size:2px;text-align:start;text-anchor:start;stroke:none"
-         id="tspan3787">diam voluptua. At vero eos et accusam</tspan><tspan
-         sodipodi:role="line"
-         x="10.653811"
-         y="30.863636"
-         style="font-size:2px;text-align:start;text-anchor:start;stroke:none"
-         id="tspan3789">et justo duo dolores et ea rebum.</tspan><tspan
-         sodipodi:role="line"
-         x="10.653811"
-         y="33.363636"
-         style="font-size:2px;text-align:start;text-anchor:start;stroke:none"
-         id="tspan3791">Stet clita kasd gubergren, no sea </tspan><tspan
-         sodipodi:role="line"
-         x="10.653811"
-         y="35.863636"
-         style="font-size:2px;text-align:start;text-anchor:start;stroke:none"
-         id="tspan3793">akimata sanctus est Lorem ipsum</tspan><tspan
-         sodipodi:role="line"
-         x="10.653811"
-         y="38.363636"
-         style="font-size:2px;text-align:start;text-anchor:start;stroke:none"
-         id="tspan3795">dolor sit amet. Lorem ipsum dolor</tspan><tspan
-         sodipodi:role="line"
-         x="10.653811"
-         y="40.863636"
-         style="font-size:2px;text-align:start;text-anchor:start;stroke:none"
-         id="tspan3797">sit amet, consetetur sadipscing elitr,</tspan><tspan
-         sodipodi:role="line"
-         x="10.653811"
-         y="43.363636"
-         style="font-size:2px;text-align:start;text-anchor:start;stroke:none"
-         id="tspan3799">sed diam nonumy eirmod tempor invidunt</tspan><tspan
-         sodipodi:role="line"
-         x="10.653811"
-         y="45.863636"
-         style="font-size:2px;text-align:start;text-anchor:start;stroke:none"
-         id="tspan3801">ut labore et dolore magna aliquyam erat,</tspan><tspan
-         sodipodi:role="line"
-         x="10.653811"
-         y="48.363636"
-         style="font-size:2px;text-align:start;text-anchor:start;stroke:none"
-         id="tspan3803">sed diam voluptua. At vero eos et accusam</tspan></text>
+       width="43.646"
+       height="36.505367"
+       x="8.3588161"
+       y="14.5655" />
     <rect
-       style="fill:#008080;fill-opacity:1;stroke:#000000;stroke-opacity:1;filter:url(#filter3905)"
+       style="fill:#008080;fill-opacity:1;stroke:#000000;stroke-width:1.0251019;stroke-opacity:1"
        id="rect3859"
-       width="4.3636365"
-       height="35.81818"
-       x="52.727272"
-       y="14.909091" />
+       width="4.5205898"
+       height="36.33215"
+       x="52.376072"
+       y="14.654057" />
     <rect
        style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1"
        id="rect3909"
