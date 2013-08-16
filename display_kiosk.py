@@ -200,7 +200,13 @@ class SettingsDialog(QDialog):
         self.autoScrollIntervalBox.setValue(int(self.settings.value("AutoScrollInterval", 5000)))
 
     def onAccepted(self):
-        self.settings.setValue("Url", self.urlBox.text())
+        url = QUrl.fromUserInput(self.urlBox.text())
+        if not url.isValid():
+            QMessageBox.warning(self, self.windowTitle(), "The given URL is invalid.")
+            self.urlBox.selectAll()
+            return
+
+        self.settings.setValue("Url", url.toString())
         self.settings.setValue("FullScreen", "true" if self.fullScreenBox.isChecked() else "false")
         self.settings.setValue("HideCursor", "true" if self.hideCursorBox.isChecked() else "false")
         self.settings.setValue("AutoScroll", "true" if self.autoScrollBox.isChecked() else "false")
