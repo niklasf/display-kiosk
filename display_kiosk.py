@@ -11,6 +11,8 @@ __status__ = "Development"
 
 
 import sys
+import PAM
+import getpass
 
 from PySide.QtCore import *
 from PySide.QtGui import *
@@ -98,8 +100,35 @@ class UnlockDialog(QDialog):
         self.setLayout(layout)
         self.setWindowTitle("Unlock to close")
 
+    def pamConv(self, auth, queryList, userData):
+        resp = []
+
+        for i in range(len(queryList)):
+            query, mode = queryList[i]
+            if mode == PAM.PAM_PROMPT_ECHO_ON:
+                resp.append((getpass.getuser(), 0))
+            elif mode == PAM.PAM_PROMPT_ECHO_OFF:
+                resp.append((self.passwordBox.text(), 0))
+            elif mode == PAM.PAM_PROMPT_ERROR_MSG or mode == PAM.PAM_PROMPT_TEXT_INFO:
+                resp.append(("", 0))
+            else:
+                return None
+
+        return resp
+
     def checkPassword(self):
-        return True
+        try:
+            auth = PAM.pam()
+            auth.start("passwd")
+            auth.set_item(PAM.PAM_CONV, self.pamConv)
+
+            auth.authenticate()
+            auth.acct_mgmt()
+        except PAM.error, resp:
+            QMessageBox.warning(self, "Did not unlock", str(resp))
+            return False
+        else:
+            return True
 
     def onCloseButtonClicked(self):
         if self.checkPassword():
