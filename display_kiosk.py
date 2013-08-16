@@ -84,18 +84,18 @@ class UnlockDialog(QDialog):
         self.passwordBox.setEchoMode(QLineEdit.Password)
         layout.addWidget(self.passwordBox, 0, 1)
 
-        settingsButton = QPushButton("Settings")
-        settingsButton.clicked.connect(self.onSettingsButtonClicked)
-        layout.addWidget(settingsButton, 1, 0)
+        self.settingsButton = QPushButton("Settings")
+        self.settingsButton.clicked.connect(self.onSettingsButtonClicked)
+        layout.addWidget(self.settingsButton, 1, 0)
 
         buttonBox = QHBoxLayout()
-        cancelButton = QPushButton("Cancel")
-        cancelButton.clicked.connect(self.reject)
-        buttonBox.addWidget(cancelButton)
-        closeButton = QPushButton("Close")
-        closeButton.clicked.connect(self.onCloseButtonClicked)
-        closeButton.setDefault(True)
-        buttonBox.addWidget(closeButton)
+        self.cancelButton = QPushButton("Cancel")
+        self.cancelButton.clicked.connect(self.reject)
+        buttonBox.addWidget(self.cancelButton)
+        self.closeButton = QPushButton("Close")
+        self.closeButton.clicked.connect(self.onCloseButtonClicked)
+        self.closeButton.setDefault(True)
+        buttonBox.addWidget(self.closeButton)
         layout.addLayout(buttonBox, 1, 1, 1, 1, Qt.AlignRight)
 
         self.setLayout(layout)
@@ -118,6 +118,15 @@ class UnlockDialog(QDialog):
         return resp
 
     def checkPassword(self):
+        self.settingsButton.setEnabled(False)
+        self.cancelButton.setEnabled(False)
+        self.closeButton.setEnabled(False)
+        self.passwordBox.setEnabled(False)
+
+        # Imediately make the buttons appear disabled.
+        while QApplication.hasPendingEvents():
+            QApplication.processEvents()
+
         try:
             auth = PAM.pam()
             auth.start("passwd")
@@ -125,12 +134,16 @@ class UnlockDialog(QDialog):
 
             auth.authenticate()
             auth.acct_mgmt()
+            return True
         except PAM.error, resp:
             QMessageBox.warning(self, "Did not unlock", str(resp))
             self.passwordBox.selectAll()
             return False
-        else:
-            return True
+        finally:
+            self.settingsButton.setEnabled(True)
+            self.cancelButton.setEnabled(True)
+            self.closeButton.setEnabled(True)
+            self.passwordBox.setEnabled(True)
 
     def onCloseButtonClicked(self):
         if self.checkPassword():
