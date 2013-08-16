@@ -37,9 +37,9 @@ class Kiosk(QWebView):
             self.showNormal()
 
         if self.settings.value("HideCursor") == "true":
-            self.setCursor(Qt.BlankCursor)
+            QApplication.setOverrideCursor(Qt.BlankCursor)
         else:
-            self.unsetCursor()
+            QApplication.restoreOverrideCursor()
 
         if self.settings.value("AutoScroll") == "true":
             self.timer.start(int(self.settings.value("AutoScrollInterval")))
@@ -67,6 +67,8 @@ class Kiosk(QWebView):
         if not unlockDialog.exec_():
             if unlockDialog.settingsChanged:
                 self.reconfigure()
+            elif self.settings.value("HideCursor") == "true":
+                QApplication.setOverrideCursor(Qt.BlankCursor)
             event.ignore()
 
 
@@ -104,6 +106,8 @@ class UnlockDialog(QDialog):
 
         self.setLayout(layout)
         self.setWindowTitle("Unlock to close")
+
+        QApplication.restoreOverrideCursor()
 
     def pamConv(self, auth, queryList, userData):
         import PAM
