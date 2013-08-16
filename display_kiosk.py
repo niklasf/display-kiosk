@@ -23,14 +23,39 @@ class Kiosk(QWebView):
 
         self.settings = settings
 
-"""
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.onTimeout)
+
+        self.reconfigure()
+
+    def reconfigure(self):
+        if self.settings.value("FullScreen") == "true":
+            self.showFullScreen()
+        else:
+            self.showNormal()
+
+        if self.settings.value("HideCursor") == "true":
+            self.setCursor(Qt.BlankCursor)
+        else:
+            self.unsetCursor()
+
+        if self.settings.value("AutoScroll") == "true":
+            self.timer.start(int(self.settings.value("AutoScrollInterval")))
+        else:
+            self.timer.stop()
+
+        self.reloadPage()
+
     def reloadPage(self):
         self.load(QUrl(self.settings.value("Url")))
 
     def onTimeout(self):
-        delta = self.settings.
-
-"""
+        delta = int(self.settings.value("AutoScrollDelta"))
+        frame = self.page().mainFrame()
+        if frame.scrollBarValue(Qt.Vertical) >= frame.scrollBarMaximum(Qt.Vertical):
+            self.reloadPage()
+        else:
+            frame.setScrollBarValue(Qt.Vertical, frame.scrollBarValue(Qt.Vertical) + delta)
 
 class SettingsDialog(QDialog):
     def __init__(self, settings, parent=None):
@@ -99,7 +124,7 @@ if __name__ == "__main__":
 
     settings = QSettings(QSettings.IniFormat, QSettings.UserScope, "display_kiosk", "display_kiosk")
     if settings.value("Url") or SettingsDialog(settings).exec_():
+
         kiosk = Kiosk(settings)
-        kiosk.show()
 
         sys.exit(app.exec_())
