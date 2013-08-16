@@ -168,6 +168,7 @@ class SettingsDialog(QDialog):
 
         box = QHBoxLayout()
         self.autoScrollBox = QCheckBox("Automatically scroll")
+        self.autoScrollBox.stateChanged.connect(self.onAutoScrollStateChanged)
         box.addWidget(self.autoScrollBox)
         self.autoScrollDeltaBox = QSpinBox()
         self.autoScrollDeltaBox.setMinimum(0)
@@ -198,6 +199,7 @@ class SettingsDialog(QDialog):
         self.autoScrollBox.setCheckState(Qt.Checked if self.settings.value("AutoScroll", "false") == "true" else Qt.Unchecked)
         self.autoScrollDeltaBox.setValue(int(self.settings.value("AutoScrollDelta", 300)))
         self.autoScrollIntervalBox.setValue(int(self.settings.value("AutoScrollInterval", 5000)))
+        self.onAutoScrollStateChanged(self.autoScrollBox.checkState())
 
     def onAccepted(self):
         url = QUrl.fromUserInput(self.urlBox.text())
@@ -213,6 +215,10 @@ class SettingsDialog(QDialog):
         self.settings.setValue("AutoScrollDelta", self.autoScrollDeltaBox.value())
         self.settings.setValue("AutoScrollInterval", self.autoScrollIntervalBox.value())
         self.accept()
+
+    def onAutoScrollStateChanged(self, state):
+        self.autoScrollDeltaBox.setEnabled(state == Qt.Checked)
+        self.autoScrollIntervalBox.setEnabled(state == Qt.Checked)
 
 
 if __name__ == "__main__":
