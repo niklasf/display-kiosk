@@ -9,7 +9,14 @@ X-Python-Version: >= 2.6
 Package: display-kiosk
 Architecture: all
 Section: python
-Depends: python-pyside, python-pam, ${misc:Depends}, ${python:Depends}
+Depends:
+ python-pyside.qtcore,
+ python-pyside.qtgui,
+ python-pyside.qtnetwork,
+ python-pyside.qtwebkit,
+ python-pam,
+ ${misc:Depends},
+ ${python:Depends}
 Description: Display a website in a stripped down kiosk
  Display kiosk allows you to show a website fullscreen without any chrome
  around.
