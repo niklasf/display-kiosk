@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Display Kiosk
-Icon=/usr/share/icons/hicolor/scalable/apps/display_kiosk.svg
+Icon=/usr/share/icons/hicolor/scalable/apps/display-kiosk.svg
 Comment=Display a website in a stripped down kiosk
-Exec=display_kiosk
+Exec=display-kiosk
 Terminal=false

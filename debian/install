@@ -1,3 +1,3 @@
-display_kiosk usr/bin/
-debian/display_kiosk.desktop usr/share/applications/
-display_kiosk.svg usr/share/icons/hicolor/scalable/apps/
+display-kiosk usr/bin/
+debian/display-kiosk.desktop usr/share/applications/
+display-kiosk.svg usr/share/icons/hicolor/scalable/apps/

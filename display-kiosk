@@ -253,7 +253,7 @@ class SettingsDialog(QDialog):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    settings = QSettings(QSettings.IniFormat, QSettings.UserScope, "display_kiosk", "display_kiosk")
+    settings = QSettings(QSettings.IniFormat, QSettings.UserScope, "display-kiosk", "display-kiosk")
     if settings.value("Url") or SettingsDialog(settings).exec_():
 
         kiosk = Kiosk(settings)
