@@ -33,8 +33,9 @@ class Kiosk(QWebView):
 """
 
 class SettingsDialog(QDialog):
-    def __init__(self, kiosk, parent=None):
+    def __init__(self, settings, parent=None):
         super(SettingsDialog, self).__init__(parent)
+        self.settings = settings
 
         layout = QVBoxLayout()
 
@@ -44,7 +45,7 @@ class SettingsDialog(QDialog):
         box.addWidget(self.urlBox)
         layout.addLayout(box)
 
-        self.fullScreenBox = QCheckBox("Use full screen mode")
+        self.fullScreenBox = QCheckBox("Use full screen mode\n(exit with ALT+F4 for most window managers)")
         layout.addWidget(self.fullScreenBox)
 
         self.hideCursorBox = QCheckBox("Hide cursor")
@@ -73,8 +74,23 @@ class SettingsDialog(QDialog):
 
         self.setLayout(layout)
         self.setWindowTitle("Display kiosk settings")
+        self.reset()
+
+    def reset(self):
+        self.urlBox.setText(self.settings.value("Url", "http://"))
+        self.fullScreenBox.setCheckState(Qt.Checked if self.settings.value("FullScreen", "true") == "true" else Qt.Unchecked)
+        self.hideCursorBox.setCheckState(Qt.Checked if self.settings.value("HideCursor", "false") == "true" else Qt.Unchecked)
+        self.autoScrollBox.setCheckState(Qt.Checked if self.settings.value("AutoScroll", "false") == "true" else Qt.Unchecked)
+        self.autoScrollDeltaBox.setValue(int(self.settings.value("AutoScrollDelta", 300)))
+        self.autoScrollIntervalBox.setValue(int(self.settings.value("AutoScrollInterval", 5000)))
 
     def onAccepted(self):
+        self.settings.setValue("Url", self.urlBox.text())
+        self.settings.setValue("FullScreen", "true" if self.fullScreenBox.isChecked() else "false")
+        self.settings.setValue("HideCursor", "true" if self.hideCursorBox.isChecked() else "false")
+        self.settings.setValue("AutoScroll", "true" if self.autoScrollBox.isChecked() else "false")
+        self.settings.setValue("AutoScrollDelta", self.autoScrollDeltaBox.value())
+        self.settings.setValue("AutoScrollInterval", self.autoScrollIntervalBox.value())
         self.accept()
 
 
