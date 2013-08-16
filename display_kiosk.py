@@ -15,6 +15,7 @@ import sys
 from PySide.QtCore import *
 from PySide.QtGui import *
 from PySide.QtWebKit import *
+from PySide.QtNetwork import *
 
 
 class Kiosk(QWebView):
@@ -44,6 +45,9 @@ class Kiosk(QWebView):
         else:
             self.timer.stop()
 
+        proxy = QNetworkProxyFactory.systemProxyForQuery(QNetworkProxyQuery(QUrl(self.settings.value("Url"))))
+        if proxy:
+            QNetworkProxy.setApplicationProxy(proxy[0])
         self.reloadPage()
 
     def reloadPage(self):
