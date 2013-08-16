@@ -3,5 +3,5 @@ Type=Application
 Name=Display Kiosk
 Icon=/usr/share/icons/hicolor/scalable/apps/display_kiosk.svg
 Comment=Display a website in a stripped down kiosk
-Exec=display_kiosk.py
+Exec=display_kiosk
 Terminal=false
