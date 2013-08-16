@@ -1,0 +1,7 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: display_kiosk
+Upstream-Contact: Niklas Fiekas, <niklas.fiekas@tu-clausthal.de>
+
+Files: *
+Copyright: 2013, Niklas Fiekas, <niklas.fiekas@tu-clausthal.de>
+License: GPL-3
