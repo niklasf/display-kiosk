@@ -81,6 +81,7 @@ class UnlockDialog(QDialog):
 
         layout.addWidget(QLabel("User password:"), 0, 0)
         self.passwordBox = QLineEdit()
+        self.passwordBox.setEchoMode(QLineEdit.Password)
         layout.addWidget(self.passwordBox, 0, 1)
 
         settingsButton = QPushButton("Settings")
