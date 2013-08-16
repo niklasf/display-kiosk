@@ -11,7 +11,6 @@ __status__ = "Development"
 
 
 import sys
-import PAM
 import getpass
 
 from PySide.QtCore import *
@@ -84,6 +83,11 @@ class UnlockDialog(QDialog):
         self.passwordBox.setEchoMode(QLineEdit.Password)
         layout.addWidget(self.passwordBox, 0, 1)
 
+        try:
+            import PAM
+        except:
+            self.passwordBox.setEnabled(False)
+
         self.settingsButton = QPushButton("Settings")
         self.settingsButton.clicked.connect(self.onSettingsButtonClicked)
         layout.addWidget(self.settingsButton, 1, 0)
@@ -102,6 +106,8 @@ class UnlockDialog(QDialog):
         self.setWindowTitle("Unlock to close")
 
     def pamConv(self, auth, queryList, userData):
+        import PAM
+
         resp = []
 
         for i in range(len(queryList)):
@@ -118,6 +124,11 @@ class UnlockDialog(QDialog):
         return resp
 
     def checkPassword(self):
+        try:
+            import PAM
+        except:
+            return True
+
         self.settingsButton.setEnabled(False)
         self.cancelButton.setEnabled(False)
         self.closeButton.setEnabled(False)
@@ -128,6 +139,7 @@ class UnlockDialog(QDialog):
             QApplication.processEvents()
 
         try:
+            import PAM
             auth = PAM.pam()
             auth.start("passwd")
             auth.set_item(PAM.PAM_CONV, self.pamConv)
