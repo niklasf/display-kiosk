@@ -1,0 +1,50 @@
+.TH DISPLAY-KIOSK 1 16/08/2013 0.0.1 "Display Kiosk Manual"
+
+.SH NAME
+display-kiosk \- Display a website in a stripped down kiosk
+
+.SH SYNOPSIS
+\fIdisplay-kiosk\fR [\-\-thats\-it\-just\-start\-it]
+
+.SH CONFIGURATION
+\fIdisplay-kiosk\fR can be fully configured with the GUI. A dialog will appear
+on its first start. You can also open the settings dialog with the "Settings"
+button in the close dialog\&.
+.sp
+The configuration is usually stored at
+\fI~/.config/display-kiosk/display-kiosk.ini\fR\&.
+.sp
+.if n\{\
+.RS 4
+.\}
+.nf
+[General]
+Url=http://www.example.com
+FullScreen=true
+HideCursor=false
+AutoScroll=false
+AutoScrollDelta=300 # pixel
+AutoScrollInterval=5000 # milliseconds
+.fi
+.if n\{\
+.RE
+.\}
+
+.SH COPYRIGHT
+Copyright (c) 2013 Niklas Fiekas <niklas.fiekas@tu-clausthal.de>
+.sp
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+.sp
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+GNU General Public License for more details.
+.sp
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.sp
+On Debian systems, the complete text of the GNU General Public
+License version 3 can be found in \fI/usr/share/common-licenses/GPL-3\fR.
