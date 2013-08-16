@@ -9,12 +9,13 @@ Screenshot
 Features
 --------
 
- - Password check with the current user, before the window can be closed or
+ - **Password check** with the current user, before the window can be closed or
    settings changed.
- - Switch between full screen mode and window mode.
- - Hide the cursor.
- - Scroll automatically at configurable speed.
- - Configurable via UI and config file.
+ - Switch between **full screen mode and window mode**.
+ - **Hide the cursor**.
+ - **Scroll automatically** at configurable speed.
+ - **Configurable** via UI and config file.
+ - Respects system **proxy** settings.
 
 Installation
 ------------
