@@ -57,6 +57,51 @@ class Kiosk(QWebView):
         else:
             frame.setScrollBarValue(Qt.Vertical, frame.scrollBarValue(Qt.Vertical) + delta)
 
+    def closeEvent(self, event):
+        if not UnlockDialog(self.settings, self).exec_():
+            event.ignore()
+            self.reconfigure()
+
+
+class UnlockDialog(QDialog):
+    def __init__(self, settings, parent):
+        super(UnlockDialog, self).__init__(parent)
+        self.settings = settings
+
+        layout = QGridLayout()
+
+        layout.addWidget(QLabel("User password:"), 0, 0)
+        self.passwordBox = QLineEdit()
+        layout.addWidget(self.passwordBox, 0, 1)
+
+        settingsButton = QPushButton("Settings")
+        settingsButton.clicked.connect(self.onSettingsButtonClicked)
+        layout.addWidget(settingsButton, 1, 0)
+
+        buttonBox = QHBoxLayout()
+        cancelButton = QPushButton("Cancel")
+        cancelButton.clicked.connect(self.reject)
+        buttonBox.addWidget(cancelButton)
+        closeButton = QPushButton("Close")
+        closeButton.clicked.connect(self.onCloseButtonClicked)
+        buttonBox.addWidget(closeButton)
+        layout.addLayout(buttonBox, 1, 1)
+
+        self.setLayout(layout)
+        self.setWindowTitle("Unlock to close")
+
+    def checkPassword(self):
+        return True
+
+    def onCloseButtonClicked(self):
+        if self.checkPassword():
+            self.accept()
+
+    def onSettingsButtonClicked(self):
+        SettingsDialog(self.settings, self).exec_()
+        self.reject()
+
+
 class SettingsDialog(QDialog):
     def __init__(self, settings, parent=None):
         super(SettingsDialog, self).__init__(parent)
