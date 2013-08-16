@@ -1,1 +1,2 @@
 display_kiosk.py usr/bin/
+debian/display_kiosk.desktop usr/share/applications/
