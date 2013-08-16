@@ -11,3 +11,10 @@ Architecture: all
 Section: python
 Depends: python-pyside, python-pam, ${misc:Depends}, ${python:Depends}
 Description: Display a website in a stripped down kiosk
+ Display kiosk allows you to show a website fullscreen without any chrome
+ around.
+ .
+ You can configure it to automatically scroll down at the desired speed.
+ Whenever it reaches the bottom of the page it reloads and goes back up.
+ .
+ Uses include showing news on a public monitor.
