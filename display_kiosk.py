@@ -18,25 +18,60 @@ from PySide.QtWebKit import *
 
 
 class Kiosk(QWebView):
-    def __init__(self):
+    def __init__(self, settings):
         super(Kiosk, self).__init__()
 
-        self.settings = QSettings(QSettings.IniFormat, QSettings.UserScope, "display_kiosk", "display_kiosk")
+        self.settings = settings
 
-        if not self.settings.value("Url"):
-            SettingsDialog(self).exec_()
+"""
+    def reloadPage(self):
+        self.load(QUrl(self.settings.value("Url")))
 
+    def onTimeout(self):
+        delta = self.settings.
+
+"""
 
 class SettingsDialog(QDialog):
     def __init__(self, kiosk, parent=None):
         super(SettingsDialog, self).__init__(parent)
 
-        layout = QGridLayout()
+        layout = QVBoxLayout()
 
-        self.fullScreenBox = QCheckBox("Use fullscreen")
+        box = QHBoxLayout()
+        box.addWidget(QLabel("URL:"))
+        self.urlBox = QLineEdit()
+        box.addWidget(self.urlBox)
+        layout.addLayout(box)
+
+        self.fullScreenBox = QCheckBox("Use full screen mode")
+        layout.addWidget(self.fullScreenBox)
+
+        self.hideCursorBox = QCheckBox("Hide cursor")
+        layout.addWidget(self.hideCursorBox)
+
+        box = QHBoxLayout()
+        self.autoScrollBox = QCheckBox("Automatically scroll")
+        box.addWidget(self.autoScrollBox)
+        self.autoScrollDeltaBox = QSpinBox()
+        self.autoScrollDeltaBox.setMinimum(0)
+        self.autoScrollDeltaBox.setMaximum(100000)
+        self.autoScrollDeltaBox.setSuffix("px")
+        box.addWidget(self.autoScrollDeltaBox)
+        box.addWidget(QLabel("every"))
+        box.addWidget(QLineEdit())
+        layout.addLayout(box)
+
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.rejected.connect(self.reject)
+        buttons.accepted.connect(self.onAccepted)
+        layout.addWidget(buttons)
 
         self.setLayout(layout)
         self.setWindowTitle("Display kiosk settings")
+
+    def onAccepted(self):
+        self.accept()
 
 
 if __name__ == "__main__":
