@@ -26,8 +26,8 @@ $ wget http://niklasf.github.io/display-kiosk/apt/niklas.fiekas@tu-clausthal.de.
 $ sudo apt-key add niklas.fiekas@tu-clausthal.de.gpg.key
 ```
 
-Append the following APT lines to `/etc/apt/apt.conf` or a file in
-`/etc/apt/apt.conf.d/`.
+Append the following APT lines to `/etc/apt/sources.list` or a file in
+`/etc/apt/sources.list.d/`.
 
 ```
 deb http://niklasf.github.io/display-kiosk/apt squeeze main
