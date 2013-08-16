@@ -58,15 +58,18 @@ class Kiosk(QWebView):
             frame.setScrollBarValue(Qt.Vertical, frame.scrollBarValue(Qt.Vertical) + delta)
 
     def closeEvent(self, event):
-        if not UnlockDialog(self.settings, self).exec_():
+        unlockDialog = UnlockDialog(self.settings, self)
+        if not unlockDialog.exec_():
+            if unlockDialog.settingsChanged:
+                self.reconfigure()
             event.ignore()
-            self.reconfigure()
 
 
 class UnlockDialog(QDialog):
     def __init__(self, settings, parent):
         super(UnlockDialog, self).__init__(parent)
         self.settings = settings
+        self.settinsChanged = False
 
         layout = QGridLayout()
 
@@ -100,7 +103,7 @@ class UnlockDialog(QDialog):
 
     def onSettingsButtonClicked(self):
         if self.checkPassword():
-            SettingsDialog(self.settings, self).exec_()
+            self.settingsChanged = SettingsDialog(self.settings, self).exec_()
             self.reject()
 
     def sizeHint(self):
