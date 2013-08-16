@@ -20,6 +20,48 @@ Installation
 ------------
 Add my public key.
 
-  $ wget http://niklasf.github.io/display-kiosk/apt/niklas.fiekas@tu-clausthal.de.gpg.key
-  $ sudo apt-key add niklas.fiekas@tu-clausthal.de.gpg.key
+```
+$ wget http://niklasf.github.io/display-kiosk/apt/niklas.fiekas@tu-clausthal.de.gpg.key
+$ sudo apt-key add niklas.fiekas@tu-clausthal.de.gpg.key
+```
 
+Append the following APT lines to `/etc/apt/apt.conf` or a file in
+`/etc/apt/apt.conf.d/`.
+
+```
+deb http://niklasf.github.io/display-kiosk/apt squeeze main
+deb-src http://niklasf.github.io/display-kiosk/apt squeeze main
+```
+
+Install the package.
+
+```
+$ sudo apt-get update
+$ sudo apt-get install display-kiosk
+```
+
+Launch for the first time and configure. If you run in fullscreen mode most
+window managers allow closing the kiosk with `ALT + F4` or `CTRL + Q`. The
+password prompted for is the current users password.
+
+```
+$ display-kiosk
+```
+
+Autostarting on LXDE (used as the default desktop environment of the Raspberry Pi)
+----------------------------------------------------------------------------------
+One practical use of display-kiosk is to display news on a public monitor
+connected to a [http://www.raspberrypi.org/](Raspberry Pi). Configure the
+Raspberry to automatically start a GUI session on startup. Then you can
+autostart display-kiosk via
+
+```
+$ mkdir -p ~/.config/autostart/
+$ ln -s /usr/share/applications/display-kiosk.desktop ~/.config/autostart/display-kiosk.desktop
+```
+
+License
+-------
+display-kiosk is licensed under the GPL-3. See the
+[/debian/copyright](debian/copyright) file for details. Feel free to use, drop
+an issue or submit a pull request.
