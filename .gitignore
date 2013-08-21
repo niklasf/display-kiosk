@@ -4,3 +4,4 @@ debian/display-kiosk/
 debian/files
 
 *.swp
+*.un~
