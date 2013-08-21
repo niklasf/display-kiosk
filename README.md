@@ -1,6 +1,5 @@
 display-kiosk
 =============
-http://niklasf.github.io/display-kiosk/
 
 Screenshot
 ----------
