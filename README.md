@@ -19,7 +19,7 @@ Features
 
 Installation
 ------------
-Add my public key.
+Add my [public key](http://niklasf.github.io/display-kiosk/niklas.fiekas@tu-clausthal.de.gpg.key).
 
 ```
 $ wget http://niklasf.github.io/display-kiosk/niklas.fiekas@tu-clausthal.de.gpg.key
