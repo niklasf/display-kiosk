@@ -1,5 +1,6 @@
 display-kiosk
 =============
+Display a website in a stripped down kiosk.
 
 Screenshot
 ----------
