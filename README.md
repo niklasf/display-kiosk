@@ -22,7 +22,7 @@ Installation
 Add my public key.
 
 ```
-$ wget http://niklasf.github.io/display-kiosk/apt/niklas.fiekas@tu-clausthal.de.gpg.key
+$ wget http://niklasf.github.io/display-kiosk/niklas.fiekas@tu-clausthal.de.gpg.key
 $ sudo apt-key add niklas.fiekas@tu-clausthal.de.gpg.key
 ```
 
@@ -30,8 +30,8 @@ Append the following APT lines to `/etc/apt/sources.list` or a file in
 `/etc/apt/sources.list.d/`.
 
 ```
-deb http://niklasf.github.io/display-kiosk/apt squeeze main
-deb-src http://niklasf.github.io/display-kiosk/apt squeeze main
+deb http://niklasf.github.io/display-kiosk squeeze main
+deb-src http://niklasf.github.io/display-kiosk squeeze main
 ```
 
 Install the package.
