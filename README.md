@@ -61,6 +61,16 @@ $ mkdir -p ~/.config/autostart/
 $ ln -s /usr/share/applications/display-kiosk.desktop ~/.config/autostart/display-kiosk.desktop
 ```
 
+Lock down Openbox-LXDE (used as the default window manager of the Raspberry Pi)
+-------------------------------------------------------------------------------
+The simple password check in the application can not prevent the user from
+switching windows or opening a task manager. Some keyboard bindings have
+to be disabled to make sure this does not happen.
+
+Keyboard bindings are configured in `~/.config/openbox/lxde-rc.xml`. Disable
+them yourself or use `/usr/share/doc/display-kiosk/lxde-rc.xml.example` if you
+wouldn't overwrite custom settings anyway.
+
 License
 -------
 display-kiosk is licensed under the GPL-3. See the
