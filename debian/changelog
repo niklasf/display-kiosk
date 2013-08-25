@@ -1,3 +1,9 @@
+display-kiosk (0.0.2) unstable; urgency=low
+
+  * Add sample lxde-rc.xml configuration.
+
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Sun, 25 Aug 2013 10:21:00 +0200
+
 display-kiosk (0.0.1) unstable; urgency=low
 
   * Initial release.
