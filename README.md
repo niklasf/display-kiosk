@@ -68,8 +68,8 @@ switching windows or opening a task manager. Some keyboard bindings have
 to be disabled to make sure this does not happen.
 
 Keyboard bindings are configured in `~/.config/openbox/lxde-rc.xml`. Disable
-them yourself or use `/usr/share/doc/display-kiosk/lxde-rc.xml.example` if you
-wouldn't overwrite custom settings anyway.
+them yourself or use `/usr/share/doc/display-kiosk/examples/lxde-rc.xml.gz` if
+you wouldn't overwrite custom settings anyway.
 
 License
 -------
