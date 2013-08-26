@@ -4,7 +4,7 @@ Display a website in a stripped down kiosk.
 
 Screenshot
 ----------
-![Screenshot of the display-kiosk application](http://niklasf.github.io/display-kiosk/screenshot.png)
+![Screenshot of the display-kiosk application](/screenshot.png)
 
 Features
 --------
