@@ -1,3 +1,10 @@
+display-kiosk (0.0.3) unstable; urgency=low
+
+  * Add info about reloading in auto scroll mode.
+  * Add auto reload option.
+
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Sat, 15 Nov 2013 16:27:00 +0200
+
 display-kiosk (0.0.2) unstable; urgency=low
 
   * Add sample lxde-rc.xml configuration.
