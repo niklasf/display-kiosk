@@ -196,7 +196,7 @@ class SettingsDialog(QDialog):
         layout.addWidget(self.hideCursorBox)
 
         box = QHBoxLayout()
-        self.autoScrollBox = QCheckBox("Automatically scroll")
+        self.autoScrollBox = QCheckBox("Automatically scroll\n(and reload when reaching the end)")
         self.autoScrollBox.stateChanged.connect(self.onAutoScrollStateChanged)
         box.addWidget(self.autoScrollBox)
         self.autoScrollDeltaBox = QSpinBox()
