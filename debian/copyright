@@ -1,9 +1,9 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: display-kiosk
-Upstream-Contact: Niklas Fiekas, <niklas.fiekas@tu-clausthal.de>
+Upstream-Contact: Niklas Fiekas <niklas.fiekas@tu-clausthal.de>
 
 Files: *
-Copyright: 2013, Niklas Fiekas, <niklas.fiekas@tu-clausthal.de>
+Copyright: 2013 Niklas Fiekas <niklas.fiekas@tu-clausthal.de>
 License: GPL-3+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
