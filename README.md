@@ -14,6 +14,7 @@ Features
  - Switch between **full screen mode and window mode**.
  - **Hide the cursor**.
  - **Scroll automatically** at configurable speed.
+ - **Reload automatically** at a configurable interval.
  - **Configurable** via UI and config file.
  - Respects system **proxy** settings.
 
