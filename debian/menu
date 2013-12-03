@@ -1,0 +1,5 @@
+?package(display-kiosk):needs="X11" \
+  section="Applications/Network/Web Browsing" \
+  title="Display kiosk" \
+  command="/usr/bin/display-kiosk"
+

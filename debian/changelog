@@ -1,3 +1,10 @@
+display-kiosk (0.0.4) unstable; urgency=low
+
+  * Document auto reload option.
+  * Add menu file.
+
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Tue, 03 Dec 2013 21:33:00 +0200
+
 display-kiosk (0.0.3) unstable; urgency=low
 
   * Add info about reloading in auto scroll mode.
