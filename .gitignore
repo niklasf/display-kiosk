@@ -1,3 +1,4 @@
+debian/*.debhelper
 debian/display-kiosk.debhelper.log
 debian/display-kiosk.substvars
 debian/display-kiosk/
