@@ -62,6 +62,12 @@ $ mkdir -p ~/.config/autostart/
 $ ln -s /usr/share/applications/display-kiosk.desktop ~/.config/autostart/display-kiosk.desktop
 ```
 
+Disable display blanking on X11
+-------------------------------
+X11 might blank the display after a while of inactivity.
+`/usr/share/doc/display-kiosk/examples/xsessionrc.gz` is an example for
+`~/.xsessionrc` that disables display blanking.
+
 Lock down Openbox-LXDE (used as the default window manager of the Raspberry Pi)
 -------------------------------------------------------------------------------
 The simple password check in the application can not prevent the user from
