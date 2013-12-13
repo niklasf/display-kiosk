@@ -1,5 +1,3 @@
-#!/usr/bin/bash
-
 # Disables screen-saver and display blanking.
 xset s off
 xset s noblank
