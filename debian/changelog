@@ -1,3 +1,11 @@
+display-kiosk (0.0.7) squeeze; urgency=low
+
+  * Remove interpreter from xsessionrc
+  * Fix comment style in display-kiosk.ini example
+  * Fix casing in display-kiosk.desktop
+
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Fri, 13 Dec 2013 19:13:00 +0200
+
 display-kiosk (0.0.6) squeeze; urgency=low
 
   * Add an example xsessionrc to disable display blanking.
