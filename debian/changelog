@@ -1,3 +1,9 @@
+display-kiosk (0.1.0) squeeze; urgency=low
+
+  * Add icon for the debian menu system
+
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Thu, 19 Dec 2013 13:37:00 +0200
+
 display-kiosk (0.0.8) squeeze; urgency=low
 
   * Remove minimize button from unlock dialog

@@ -1,3 +1,4 @@
 display-kiosk usr/bin/
 debian/display-kiosk.desktop usr/share/applications/
 display-kiosk.svg usr/share/icons/hicolor/scalable/apps/
+display-kiosk.xpm usr/share/pixmaps/

@@ -1,5 +1,6 @@
-?package(display-kiosk):needs="X11" \
+?package(display-kiosk): \
+  needs="X11" \
   section="Applications/Network/Web Browsing" \
   title="Display kiosk" \
-  command="/usr/bin/display-kiosk"
-
+  command="/usr/bin/display-kiosk" \
+  icon="/usr/share/pixmaps/display-kiosk.xpm"

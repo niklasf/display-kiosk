@@ -4,5 +4,7 @@ debian/display-kiosk.substvars
 debian/display-kiosk/
 debian/files
 
+display-kiosk.xpm
+
 *.swp
 *.un~
