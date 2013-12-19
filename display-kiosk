@@ -117,6 +117,9 @@ class UnlockDialog(QDialog):
 
         self.setLayout(layout)
         self.setWindowTitle("Unlock to close")
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowMinimizeButtonHint)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowMaximizeButtonHint)
+        self.setWindowFlags(self.windowFlags() | Qt.CustomizeWindowHint)
 
         QApplication.restoreOverrideCursor()
 
