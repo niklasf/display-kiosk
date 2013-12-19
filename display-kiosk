@@ -49,6 +49,7 @@ class Kiosk(QWidget):
 
         self.passwordBox = QLineEdit()
         self.passwordBox.setEchoMode(QLineEdit.Password)
+        self.passwordBox.installEventFilter(self)
         unlockBarLayout.addWidget(self.passwordBox)
 
         try:
@@ -61,6 +62,7 @@ class Kiosk(QWidget):
         unlockBarLayout.addWidget(self.settingsButton)
 
         self.closeButton = QPushButton("Close")
+        self.closeButton.setDefault(True)
         self.closeButton.clicked.connect(self.onCloseButtonClicked)
         unlockBarLayout.addWidget(self.closeButton)
 
@@ -144,9 +146,6 @@ class Kiosk(QWidget):
         self.unlockBar.setVisible(False)
         self.passwordBox.setText("")
 
-        if self.settings.value("HideCursor") == "true":
-            QApplication.setOverrideCursor(Qt.BlankCursor)
-
     def closeEvent(self, event):
         if self.isVisible():
             self.showUnlockBar()
@@ -205,6 +204,15 @@ class Kiosk(QWidget):
                 return None
 
         return resp
+
+    def eventFilter(self, obj, event):
+        if obj == self.passwordBox:
+            if event.type() == QEvent.KeyPress:
+                if event.key() == Qt.Key_Escape:
+                    self.hideUnlockBar()
+                elif event.key() == Qt.Key_Return:
+                    self.onCloseButtonClicked()
+        return super(Kiosk, self).eventFilter(obj, event)
 
 
 class SettingsDialog(QDialog):
