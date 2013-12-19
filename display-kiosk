@@ -71,6 +71,9 @@ class Kiosk(QWidget):
         self.unlockBar.setLayout(unlockBarLayout)
 
     def initKiosk(self):
+        self.page = KioskWebPage()
+        self.view.setPage(self.page)
+
         self.settings = settings
 
         self.scrollTimer = QTimer()
@@ -78,6 +81,7 @@ class Kiosk(QWidget):
 
         self.reloadTimer = QTimer()
         self.reloadTimer.timeout.connect(self.onReloadTimeout)
+        self.page.errorReloadTimer.timeout.connect(self.onReloadTimeout)
 
         self.reconfigure()
 
@@ -108,7 +112,7 @@ class Kiosk(QWidget):
         self.reloadPage()
 
     def reloadPage(self):
-        self.view.load(QUrl(self.settings.value("Url")))
+        self.view.page().mainFrame().load(QUrl(self.settings.value("Url")))
 
     def onScrollTimeout(self):
         delta = int(self.settings.value("AutoScrollDelta"))
@@ -219,6 +223,49 @@ class Kiosk(QWidget):
                 elif event.key() == Qt.Key_Return:
                     self.onCloseButtonClicked()
         return super(Kiosk, self).eventFilter(obj, event)
+
+
+class KioskWebPage(QWebPage):
+    def __init__(self):
+        super(KioskWebPage, self).__init__()
+
+        self.loadFinished.connect(self.onLoadFinished)
+
+        self.errorReloadTimer = QTimer()
+        self.errorReloadTimer.setSingleShot(True)
+
+        self.errorPageLoaded = True
+
+    def extension(self, extension, option, output):
+        if extension == QWebPage.ErrorPageExtension:
+            if option.domain == QWebPage.QtNetwork:
+                output.content = QByteArray(u"Network error: %s\n" % option.errorString)
+            elif option.domain == QWebPage.Http:
+                output.content = QByteArray(u"HTTP error: %s\n" % option.errorString)
+            elif option.domain == QWebPage.WebKit:
+                output.content = QByteArray(u"WebKit error: %s\n" % option.errorString)
+            output.contentType = "text/plain"
+
+            sys.stderr.write(output.content)
+
+            self.errorReloadTimer.start(5000)
+            self.errorPageLoaded = False
+            return True
+        else:
+            return False
+
+    def supportsExtension(self, extension):
+        if extension == QWebPage.ErrorPageExtension:
+            return True
+
+        return False
+
+    def onLoadFinished(self, ok):
+        if ok:
+            if not self.errorPageLoaded:
+                self.errorPageLoaded = True
+            else:
+                self.errorReloadTimer.stop()
 
 
 class SettingsDialog(QDialog):
