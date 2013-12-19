@@ -19,10 +19,56 @@ from PySide.QtWebKit import *
 from PySide.QtNetwork import *
 
 
-class Kiosk(QWebView):
+class Kiosk(QWidget):
     def __init__(self, settings):
         super(Kiosk, self).__init__()
+        self.initUnlockBar()
+        self.initLayout()
+        self.initKiosk()
 
+    def initLayout(self):
+        layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(layout)
+
+        layout.addWidget(self.unlockBar, 0)
+
+        self.view = QWebView()
+        layout.addWidget(self.view, 1)
+
+    def initUnlockBar(self):
+        unlockBarLayout = QHBoxLayout()
+
+        self.cancelButton = QPushButton("Cancel")
+        self.cancelButton.clicked.connect(self.onCancelButtonClicked)
+        unlockBarLayout.addWidget(self.cancelButton)
+
+        unlockLabel = QLabel("Unlock to close: ")
+        unlockLabel.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        unlockBarLayout.addWidget(unlockLabel, 1)
+
+        self.passwordBox = QLineEdit()
+        self.passwordBox.setEchoMode(QLineEdit.Password)
+        unlockBarLayout.addWidget(self.passwordBox)
+
+        try:
+            import PAM
+        except:
+            self.passwordBox.setEnabled(False)
+
+        self.settingsButton = QPushButton("Settings")
+        self.settingsButton.clicked.connect(self.onSettingsButtonClicked)
+        unlockBarLayout.addWidget(self.settingsButton)
+
+        self.closeButton = QPushButton("Close")
+        self.closeButton.clicked.connect(self.onCloseButtonClicked)
+        unlockBarLayout.addWidget(self.closeButton)
+
+        self.unlockBar = QWidget()
+        self.unlockBar.setVisible(False)
+        self.unlockBar.setLayout(unlockBarLayout)
+
+    def initKiosk(self):
         self.settings = settings
 
         self.scrollTimer = QTimer()
@@ -60,11 +106,11 @@ class Kiosk(QWebView):
         self.reloadPage()
 
     def reloadPage(self):
-        self.load(QUrl(self.settings.value("Url")))
+        self.view.load(QUrl(self.settings.value("Url")))
 
     def onScrollTimeout(self):
         delta = int(self.settings.value("AutoScrollDelta"))
-        frame = self.page().mainFrame()
+        frame = self.view.page().mainFrame()
         if frame.scrollBarValue(Qt.Vertical) >= frame.scrollBarMaximum(Qt.Vertical):
             self.reloadPage()
         else:
@@ -73,55 +119,74 @@ class Kiosk(QWebView):
     def onReloadTimeout(self):
         self.reloadPage()
 
-    def closeEvent(self, event):
-        unlockDialog = UnlockDialog(self.settings, self)
-        if not unlockDialog.exec_():
-            if unlockDialog.settingsChanged:
+    def onCancelButtonClicked(self):
+        self.hideUnlockBar()
+
+    def onSettingsButtonClicked(self):
+        if self.checkPassword():
+            settingsDialog = SettingsDialog(self.settings, self)
+            if settingsDialog.exec_():
                 self.reconfigure()
-            elif self.settings.value("HideCursor") == "true":
-                QApplication.setOverrideCursor(Qt.BlankCursor)
+
+            self.hideUnlockBar()
+
+    def onCloseButtonClicked(self):
+        if self.checkPassword():
+            self.hide()
+            self.close()
+
+    def showUnlockBar(self):
+        QApplication.restoreOverrideCursor()
+        self.unlockBar.setVisible(True)
+        self.passwordBox.setFocus()
+
+    def hideUnlockBar(self):
+        self.unlockBar.setVisible(False)
+        self.passwordBox.setText("")
+
+        if self.settings.value("HideCursor") == "true":
+            QApplication.setOverrideCursor(Qt.BlankCursor)
+
+    def closeEvent(self, event):
+        if self.isVisible():
+            self.showUnlockBar()
             event.ignore()
+        else:
+            event.accept()
 
-
-class UnlockDialog(QDialog):
-    def __init__(self, settings, parent):
-        super(UnlockDialog, self).__init__(parent)
-        self.settings = settings
-        self.settingsChanged = False
-
-        layout = QGridLayout()
-
-        layout.addWidget(QLabel("User password:"), 0, 0)
-        self.passwordBox = QLineEdit()
-        self.passwordBox.setEchoMode(QLineEdit.Password)
-        layout.addWidget(self.passwordBox, 0, 1)
-
+    def checkPassword(self):
         try:
             import PAM
         except:
-            self.passwordBox.setEnabled(False)
+            return True
 
-        self.settingsButton = QPushButton("Settings")
-        self.settingsButton.clicked.connect(self.onSettingsButtonClicked)
-        layout.addWidget(self.settingsButton, 1, 0)
+        self.settingsButton.setEnabled(False)
+        self.cancelButton.setEnabled(False)
+        self.closeButton.setEnabled(False)
+        self.passwordBox.setEnabled(False)
 
-        buttonBox = QHBoxLayout()
-        self.cancelButton = QPushButton("Cancel")
-        self.cancelButton.clicked.connect(self.reject)
-        buttonBox.addWidget(self.cancelButton)
-        self.closeButton = QPushButton("Close")
-        self.closeButton.clicked.connect(self.onCloseButtonClicked)
-        self.closeButton.setDefault(True)
-        buttonBox.addWidget(self.closeButton)
-        layout.addLayout(buttonBox, 1, 1, 1, 1, Qt.AlignRight)
+        # Immediately make the buttons appear disabled.
+        while QApplication.hasPendingEvents():
+            QApplication.processEvents()
 
-        self.setLayout(layout)
-        self.setWindowTitle("Unlock to close")
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowMinimizeButtonHint)
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowMaximizeButtonHint)
-        self.setWindowFlags(self.windowFlags() | Qt.CustomizeWindowHint)
+        try:
+            import PAM
+            auth = PAM.pam()
+            auth.start("passwd")
+            auth.set_item(PAM.PAM_CONV, self.pamConv)
 
-        QApplication.restoreOverrideCursor()
+            auth.authenticate()
+            auth.acct_mgmt()
+            return True
+        except PAM.error:
+            self.passwordBox.selectAll()
+            self.passwordBox.setFocus()
+            return False
+        finally:
+            self.settingsButton.setEnabled(True)
+            self.cancelButton.setEnabled(True)
+            self.closeButton.setEnabled(True)
+            self.passwordBox.setEnabled(True)
 
     def pamConv(self, auth, queryList, userData):
         import PAM
@@ -140,54 +205,6 @@ class UnlockDialog(QDialog):
                 return None
 
         return resp
-
-    def checkPassword(self):
-        try:
-            import PAM
-        except:
-            return True
-
-        self.settingsButton.setEnabled(False)
-        self.cancelButton.setEnabled(False)
-        self.closeButton.setEnabled(False)
-        self.passwordBox.setEnabled(False)
-
-        # Imediately make the buttons appear disabled.
-        while QApplication.hasPendingEvents():
-            QApplication.processEvents()
-
-        try:
-            import PAM
-            auth = PAM.pam()
-            auth.start("passwd")
-            auth.set_item(PAM.PAM_CONV, self.pamConv)
-
-            auth.authenticate()
-            auth.acct_mgmt()
-            return True
-        except PAM.error, resp:
-            QMessageBox.warning(self, "Did not unlock", "%s [%d]" % (resp[0], resp[1]))
-            self.passwordBox.selectAll()
-            return False
-        finally:
-            self.settingsButton.setEnabled(True)
-            self.cancelButton.setEnabled(True)
-            self.closeButton.setEnabled(True)
-            self.passwordBox.setEnabled(True)
-
-    def onCloseButtonClicked(self):
-        if self.checkPassword():
-            self.accept()
-
-    def onSettingsButtonClicked(self):
-        if self.checkPassword():
-            self.settingsChanged = SettingsDialog(self.settings, self).exec_()
-            self.reject()
-
-    def sizeHint(self):
-        # Make the dialog a little wider than nescessary.
-        normalSize = super(UnlockDialog, self).sizeHint()
-        return QSize(normalSize.width() + 50, normalSize.height())
 
 
 class SettingsDialog(QDialog):
