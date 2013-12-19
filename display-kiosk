@@ -90,7 +90,7 @@ class Kiosk(QWidget):
         if self.settings.value("HideCursor") == "true":
             QApplication.setOverrideCursor(Qt.BlankCursor)
         else:
-            QApplication.restoreOverrideCursor()
+            QApplication.setOverrideCursor(Qt.ArrowCursor)
 
         if self.settings.value("AutoScroll") == "true":
             self.scrollTimer.start(int(self.settings.value("AutoScrollInterval")))
@@ -138,13 +138,18 @@ class Kiosk(QWidget):
             self.close()
 
     def showUnlockBar(self):
-        QApplication.restoreOverrideCursor()
+        QApplication.setOverrideCursor(Qt.ArrowCursor)
         self.unlockBar.setVisible(True)
         self.passwordBox.setFocus()
 
     def hideUnlockBar(self):
         self.unlockBar.setVisible(False)
         self.passwordBox.setText("")
+
+        if self.settings.value("HideCursor") == "true":
+            QApplication.setOverrideCursor(Qt.BlankCursor)
+        else:
+            QApplication.setOverrideCursor(Qt.ArrowCursor)
 
     def closeEvent(self, event):
         if self.isVisible():
@@ -178,6 +183,7 @@ class Kiosk(QWidget):
             auth.acct_mgmt()
             return True
         except PAM.error:
+            self.passwordBox.setEnabled(True)
             self.passwordBox.selectAll()
             self.passwordBox.setFocus()
             return False
