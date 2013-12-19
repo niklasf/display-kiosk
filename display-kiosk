@@ -115,12 +115,25 @@ class Kiosk(QWidget):
         self.view.page().mainFrame().load(QUrl(self.settings.value("Url")))
 
     def onScrollTimeout(self):
-        delta = int(self.settings.value("AutoScrollDelta"))
         frame = self.view.page().mainFrame()
-        if frame.scrollBarValue(Qt.Vertical) >= frame.scrollBarMaximum(Qt.Vertical):
+        if not self.scrollFrame(frame):
             self.reloadPage()
+
+    def scrollFrame(self, frame):
+        delta = int(self.settings.value("AutoScrollDelta"))
+        maximum = frame.scrollBarMaximum(Qt.Vertical)
+
+        if maximum == 0:
+            for childFrame in frame.childFrames():
+                if self.scrollFrame(childFrame):
+                    return True
+            return False
         else:
-            frame.setScrollBarValue(Qt.Vertical, frame.scrollBarValue(Qt.Vertical) + delta)
+            if frame.scrollBarValue(Qt.Vertical) >= maximum:
+                return False
+            else:
+                frame.setScrollBarValue(Qt.Vertical, frame.scrollBarValue(Qt.Vertical) + delta)
+            return True
 
     def onReloadTimeout(self):
         self.reloadPage()
