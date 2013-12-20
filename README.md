@@ -14,25 +14,27 @@ Features
  - Switch between **full screen mode and window mode**.
  - **Hide the cursor**.
  - **Scroll automatically** at configurable speed.
- - **Reload automatically** at a configurable interval.
+ - **Reload automatically** at a configurable interval. If possible this is
+   done **at a good moment**, i.e. when the application is idle or autoscrolling
+   has reached the end.
  - **Configurable** via UI and config file.
  - Respects system **proxy** settings.
 
 Installation
 ------------
-Add my [public key](http://niklasf.github.io/display-kiosk/niklas.fiekas@tu-clausthal.de.gpg.key).
+Add the [public key for the package archive](https://iserv-trg-oha.de/apt/apt.gpg.key).
 
 ```
-$ wget http://niklasf.github.io/display-kiosk/niklas.fiekas@tu-clausthal.de.gpg.key
-$ sudo apt-key add niklas.fiekas@tu-clausthal.de.gpg.key
+$ wget https://iserv-trg-oha.de/apt/apt.gpg.key
+$ sudo apt-key add apt.gpg.key
 ```
 
 Append the following APT lines to `/etc/apt/sources.list` or a file in
 `/etc/apt/sources.list.d/`.
 
 ```
-deb http://niklasf.github.io/display-kiosk squeeze main
-deb-src http://niklasf.github.io/display-kiosk squeeze main
+deb http://iserv-trg-oha.de/apt/ squeeze main
+deb-src http://iserv-trg-oha.de/apt/ squeeze main
 ```
 
 Install the package.
