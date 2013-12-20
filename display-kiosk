@@ -117,7 +117,10 @@ class Kiosk(QWidget):
     def onScrollTimeout(self):
         frame = self.view.page().mainFrame()
         if not self.scrollFrame(frame):
-            self.reloadPage()
+            if self.settings.value("AutoScrollReload") == "true":
+                self.reloadPage()
+            else:
+                self.resetFrameScrollBars(frame)
 
     def scrollFrame(self, frame):
         delta = int(self.settings.value("AutoScrollDelta"))
@@ -134,6 +137,11 @@ class Kiosk(QWidget):
             else:
                 frame.setScrollBarValue(Qt.Vertical, frame.scrollBarValue(Qt.Vertical) + delta)
             return True
+
+    def resetFrameScrollBars(self, frame):
+        frame.setScrollBarValue(Qt.Vertical, 0)
+        for childFrame in frame.childFrames():
+            self.resetFrameScrollBars(childFrame)
 
     def onReloadTimeout(self):
         self.reloadPage()
@@ -301,7 +309,7 @@ class SettingsDialog(QDialog):
         layout.addWidget(self.hideCursorBox)
 
         box = QHBoxLayout()
-        self.autoScrollBox = QCheckBox("Automatically scroll\n(and reload when reaching the end)")
+        self.autoScrollBox = QCheckBox("Automatically scroll")
         self.autoScrollBox.stateChanged.connect(self.onAutoScrollStateChanged)
         box.addWidget(self.autoScrollBox)
         self.autoScrollDeltaBox = QSpinBox()
@@ -317,6 +325,9 @@ class SettingsDialog(QDialog):
         box.addWidget(self.autoScrollIntervalBox)
         box.addWidget(QWidget(), 1)
         layout.addLayout(box)
+
+        self.autoScrollReloadBox = QCheckBox("Reload when reaching the end")
+        layout.addWidget(self.autoScrollReloadBox)
 
         box = QHBoxLayout()
         self.autoReloadBox = QCheckBox("Reload every")
@@ -348,6 +359,7 @@ class SettingsDialog(QDialog):
         self.autoScrollIntervalBox.setValue(int(self.settings.value("AutoScrollInterval", 5000)))
         self.autoReloadBox.setCheckState(Qt.Checked if self.settings.value("AutoReload", "false") == "true" else Qt.Unchecked)
         self.autoReloadIntervalBox.setValue(int(self.settings.value("AutoReloadInterval", 60000)))
+        self.autoScrollReloadBox.setCheckState(Qt.Checked if self.settings.value("AutoScrollReload", "true") == "true" else Qt.Unchecked)
 
         self.onAutoScrollStateChanged(self.autoScrollBox.checkState())
         self.onAutoReloadStateChanged(self.autoReloadBox.checkState())
@@ -367,11 +379,13 @@ class SettingsDialog(QDialog):
         self.settings.setValue("AutoScrollInterval", self.autoScrollIntervalBox.value())
         self.settings.setValue("AutoReload", "true" if self.autoReloadBox.isChecked() else "false")
         self.settings.setValue("AutoReloadInterval", self.autoReloadIntervalBox.value())
+        self.settings.setValue("AutoScrollReload", "true" if self.autoScrollReloadBox.isChecked() else "false")
         self.accept()
 
     def onAutoScrollStateChanged(self, state):
         self.autoScrollDeltaBox.setEnabled(state == Qt.Checked)
         self.autoScrollIntervalBox.setEnabled(state == Qt.Checked)
+        self.autoScrollReloadBox.setEnabled(state == Qt.Checked)
 
     def onAutoReloadStateChanged(self, state):
         self.autoReloadIntervalBox.setEnabled(state == Qt.Checked)
