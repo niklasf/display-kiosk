@@ -91,6 +91,9 @@ class Kiosk(QWidget):
 
         self.reconfigure()
 
+        self.setWindowTitle("Display kiosk")
+        self.setWindowIcon(QIcon("display-kiosk.ico"))
+
     def reconfigure(self):
         if self.settings.value("FullScreen") == "true":
             self.showFullScreen()
@@ -370,6 +373,7 @@ class SettingsDialog(QDialog):
 
         self.setLayout(layout)
         self.setWindowTitle("Display kiosk settings")
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.reset()
 
     def reset(self):
