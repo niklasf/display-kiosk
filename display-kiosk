@@ -112,12 +112,13 @@ class Kiosk(QWidget):
         self.reloadPage()
 
     def reloadPage(self):
+        self.reloadSoon = False
         self.view.page().mainFrame().load(QUrl(self.settings.value("Url")))
 
     def onScrollTimeout(self):
         frame = self.view.page().mainFrame()
         if not self.scrollFrame(frame):
-            if self.settings.value("AutoScrollReload") == "true":
+            if self.settings.value("AutoScrollReload", "true") == "true" or self.reloadSoon:
                 self.reloadPage()
             else:
                 self.resetFrameScrollBars(frame)
@@ -144,7 +145,10 @@ class Kiosk(QWidget):
             self.resetFrameScrollBars(childFrame)
 
     def onReloadTimeout(self):
-        self.reloadPage()
+        if self.settings.value("AutoScroll") == "true":
+            self.reloadSoon = True
+        else:
+            self.reloadPage()
 
     def onCancelButtonClicked(self):
         self.hideUnlockBar()
@@ -326,11 +330,11 @@ class SettingsDialog(QDialog):
         box.addWidget(QWidget(), 1)
         layout.addLayout(box)
 
-        self.autoScrollReloadBox = QCheckBox("Reload when reaching the end")
+        self.autoScrollReloadBox = QCheckBox("Always reload when reaching the end")
         layout.addWidget(self.autoScrollReloadBox)
 
         box = QHBoxLayout()
-        self.autoReloadBox = QCheckBox("Reload every")
+        self.autoReloadBox = QCheckBox("Reload about every")
         self.autoReloadBox.stateChanged.connect(self.onAutoReloadStateChanged)
         box.addWidget(self.autoReloadBox)
         self.autoReloadIntervalBox = QSpinBox()
