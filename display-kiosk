@@ -73,15 +73,21 @@ class Kiosk(QWidget):
     def initKiosk(self):
         self.page = KioskWebPage()
         self.view.setPage(self.page)
+        self.view.installEventFilter(self)
 
         self.settings = settings
+
+        self.idleTimer = QTimer()
+        self.idleTimer.setInterval(30000)
+        self.idleTimer.timeout.connect(self.onIdleTimeout)
 
         self.scrollTimer = QTimer()
         self.scrollTimer.timeout.connect(self.onScrollTimeout)
 
         self.reloadTimer = QTimer()
         self.reloadTimer.timeout.connect(self.onReloadTimeout)
-        self.page.errorReloadTimer.timeout.connect(self.onReloadTimeout)
+
+        self.page.errorReloadTimer.timeout.connect(self.onErrorReloadTimeout)
 
         self.reconfigure()
 
@@ -93,8 +99,10 @@ class Kiosk(QWidget):
 
         if self.settings.value("HideCursor") == "true":
             QApplication.setOverrideCursor(Qt.BlankCursor)
+            self.idleTimer.stop()
         else:
             QApplication.setOverrideCursor(Qt.ArrowCursor)
+            self.idleTimer.start()
 
         if self.settings.value("AutoScroll") == "true":
             self.scrollTimer.start(int(self.settings.value("AutoScrollInterval")))
@@ -145,10 +153,17 @@ class Kiosk(QWidget):
             self.resetFrameScrollBars(childFrame)
 
     def onReloadTimeout(self):
-        if self.settings.value("AutoScroll") == "true":
+        if self.settings.value("AutoScroll") == "true" or self.settings.value("HideCursor") != "true":
             self.reloadSoon = True
         else:
             self.reloadPage()
+
+    def onIdleTimeout(self):
+        if self.reloadSoon:
+            self.reloadPage()
+
+    def onErrorReloadTimeout(self):
+        self.reloadPage()
 
     def onCancelButtonClicked(self):
         self.hideUnlockBar()
@@ -241,6 +256,9 @@ class Kiosk(QWidget):
         return resp
 
     def eventFilter(self, obj, event):
+        if event.type() == QEvent.KeyPress or event.type() == QEvent.MouseMove:
+            self.idleTimer.start()
+
         if obj == self.passwordBox:
             if event.type() == QEvent.KeyPress:
                 if event.key() == Qt.Key_Escape:
