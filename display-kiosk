@@ -303,6 +303,8 @@ class KioskWebPage(QWebPage):
     def supportsExtension(self, extension):
         if extension == QWebPage.ErrorPageExtension:
             return True
+        elif extension == QWebPage.ChooseMultipleFilesExtension:
+            return False
 
         return False
 
@@ -312,6 +314,9 @@ class KioskWebPage(QWebPage):
                 self.errorPageLoaded = True
             else:
                 self.errorReloadTimer.stop()
+
+    def chooseFile(self, parentFrame, suggestedFile):
+        return None
 
 
 class SettingsDialog(QDialog):
