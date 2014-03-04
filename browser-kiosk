@@ -27,6 +27,15 @@ class WebPage(QWebPage):
     def chooseFile(self, webFrame, suggestedFileName):
         self.tab.statusBar.showMessage(u"Sie können keine Dateien von diesem Anzeiger aus hochladen!")
 
+    def acceptNavigationRequest(self, frame, request, navigationType):
+        #if request.url().host() != "iserv-trg-oha.de":
+        #    return False
+        #
+        #if not request.url().path().startswith("/idesk/"):
+        #    return False
+
+        return True
+
 
 class KioskTab(QWidget):
     def __init__(self, tabs):
