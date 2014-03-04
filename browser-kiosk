@@ -1,0 +1,175 @@
+#!/usr/bin/python2
+# -*- coding: utf-8 -*-
+
+from PySide.QtCore import *
+from PySide.QtGui import *
+from PySide.QtNetwork import *
+from PySide.QtWebKit import *
+
+import sys
+
+
+class WebPage(QWebPage):
+    def __init__(self, tab):
+        super(WebPage, self).__init__()
+        self.tab = tab
+
+    def createWindow(self, webWindowType):
+        tab = KioskTab(self.tab.tabs)
+
+        page = tab.view.page()
+        page.setNetworkAccessManager(self.networkAccessManager())
+        return tab.view.page()
+
+    def supportsExtension(self, extension):
+        return False
+
+    def chooseFile(self, webFrame, suggestedFileName):
+        self.tab.statusBar.showMessage(u"Sie können keine Dateien von diesem Anzeiger aus hochladen!")
+
+
+class KioskTab(QWidget):
+    def __init__(self, tabs):
+        super(KioskTab, self).__init__()
+        self.tabs = tabs
+
+        self.view = QWebView()
+        self.view.setPage(WebPage(self))
+        self.view.statusBarMessage.connect(self.onStatusBarMessage)
+        self.view.loadStarted.connect(self.onLoadStarted)
+        self.view.loadProgress.connect(self.onLoadProgress)
+        self.view.loadFinished.connect(self.onLoadFinished)
+        self.view.page().printRequested.connect(self.onPrintRequested)
+        self.view.page().windowCloseRequested.connect(self.onWindowCloseRequested)
+        self.view.setContextMenuPolicy(Qt.NoContextMenu)
+        self.view.installEventFilter(self)
+
+        self.statusBar = QStatusBar()
+        self.progressBar = QProgressBar()
+        self.statusBar.addPermanentWidget(self.progressBar)
+
+        self.resetAction = QAction(u"Abmelden nicht vergessen", self)
+        self.resetAction.setIcon(self.style().standardIcon(QStyle.SP_BrowserStop))
+        self.resetAction.triggered.connect(self.onResetAction)
+
+        self.backAction = QAction(self)
+        self.backAction.setIcon(self.view.pageAction(QWebPage.Back).icon())
+        self.backAction.triggered.connect(self.onBackAction)
+
+        self.toolBar = QToolBar()
+        self.toolBar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        self.toolBar.addAction(self.resetAction)
+        self.toolBar.addSeparator()
+        self.toolBar.addAction(self.backAction)
+        self.toolBar.addAction(self.view.pageAction(QWebPage.Forward))
+        self.view.pageAction(QWebPage.Forward).setText("")
+        self.toolBar.addSeparator()
+        self.toolBar.addAction(self.view.pageAction(QWebPage.Reload))
+        self.view.pageAction(QWebPage.Reload).setText("")
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.toolBar, 0)
+        layout.addWidget(self.view, 1)
+        layout.addWidget(self.statusBar, 0)
+        self.setLayout(layout)
+        self.layout().setContentsMargins(0, 0, 0, 0)
+
+        i = self.tabs.addWidget(self)
+        self.tabs.setCurrentIndex(i)
+
+    def onResetAction(self):
+        self.tabs.reset()
+
+    def onWindowCloseRequested(self):
+        if self.tabs.count() > 1:
+            self.tabs.removeWidget(self)
+
+    def onStatusBarMessage(self, message):
+        self.statusBar.showMessage(message)
+
+    def onLoadStarted(self):
+        self.progressBar.setVisible(True)
+
+    def onLoadFinished(self, ok):
+        self.progressBar.setVisible(False)
+
+    def onLoadProgress(self, progress):
+        self.progressBar.setValue(progress)
+
+    def onPrintRequested(self, frame):
+        self.statusBar.showMessage(u"Sie können von diesem Anzeiger aus nicht drucken!")
+
+    def onBackAction(self):
+        if self.view.pageAction(QWebPage.Back).isEnabled():
+            self.view.back()
+        else:
+            self.onWindowCloseRequested()
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.KeyPress or event.type() == QEvent.MouseMove:
+            self.tabs.notIdle()
+
+        return super(KioskTab, self).eventFilter(obj, event)
+
+
+class Kiosk(QStackedWidget):
+    def __init__(self):
+        super(Kiosk, self).__init__()
+        self.reset()
+
+        self.idleTimer = QTimer()
+        self.idleTimer.timeout.connect(self.onIdleTimeout)
+
+        self.countdownTimer = QTimer()
+        self.countdownTimer.timeout.connect(self.onCountdownTimeout)
+        self.countdown = 30
+
+        self.notIdle()
+
+    def onIdleTimeout(self):
+        self.countdownTimer.start(1000)
+
+    def onCountdownTimeout(self):
+        self.countdown -= 1
+
+        for i in range(0, self.count()):
+            tab = self.widget(i)
+            tab.resetAction.setText("Abmelden nicht vergessen (%d)" % self.countdown)
+
+        if self.countdown <= 0:
+            self.reset()
+            self.notIdle()
+
+    def notIdle(self):
+        if self.countdownTimer.isActive():
+            for i in range(0, self.count()):
+                tab = self.widget(i)
+                tab.resetAction.setText("Abmelden nicht vergessen")
+
+            self.countdown = 30
+            self.countdownTimer.stop()
+
+        self.idleTimer.stop()
+        self.idleTimer.start(60000)
+
+    def reset(self):
+        while self.count():
+            self.removeWidget(self.widget(0))
+
+        tab = KioskTab(self)
+        tab.view.page().mainFrame().load(QUrl("https://iserv-trg-oha.de/idesk/"))
+
+    def closeEvent(self, event):
+        self.reset()
+
+        event.ignore()
+        return False
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+
+    kiosk = Kiosk()
+    kiosk.showFullScreen()
+
+    app.exec_()
