@@ -1,3 +1,11 @@
+display-kiosk (0.1.3) wheezy; urgency=low
+
+  * Always use Python 2 as interpreter
+  * Make python an explicit dependency
+  * Recommend x11-xserver-utils
+
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Mon, 24 Mar 2014 19:16:50 +0100
+
 display-kiosk (0.1.2) squeeze; urgency=low
 
   * Fix menu icon size
