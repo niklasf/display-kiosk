@@ -16,6 +16,7 @@ Depends:
  python-pam,
  ${misc:Depends},
  ${python:Depends}
+Recommends: x11-xserver-utils
 Description: Display a website in a stripped down kiosk
  Display kiosk allows you to show a website fullscreen without any chrome
  around.
