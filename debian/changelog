@@ -1,7 +1,6 @@
 display-kiosk (0.1.3) wheezy; urgency=low
 
-  * Always use Python 2 as interpreter
-  * Make python an explicit dependency
+  * Explicitly depend on Python 2.7
   * Recommend x11-xserver-utils
 
  -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Mon, 24 Mar 2014 19:16:50 +0100
@@ -12,7 +11,7 @@ display-kiosk (0.1.2) squeeze; urgency=low
   * Update documentation
   * Windows support
 
- -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Fri, 20 Dec 2013 22:06:00 +0200
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Fri, 20 Dec 2013 22:06:00 +0100
 
 display-kiosk (0.1.1) squeeze; urgency=low
 
@@ -21,7 +20,7 @@ display-kiosk (0.1.1) squeeze; urgency=low
   * Do not reload in the middle of the page
   * Do not reload while not idle
 
- -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Fri, 20 Dec 2013 01:43:00 +0200
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Fri, 20 Dec 2013 01:43:00 +0100
 
 display-kiosk (0.1.0) squeeze; urgency=low
 
@@ -31,13 +30,13 @@ display-kiosk (0.1.0) squeeze; urgency=low
   * Handle escape and return keys
   * Add icon for the debian menu system
 
- -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Thu, 19 Dec 2013 16:12:00 +0200
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Thu, 19 Dec 2013 16:12:00 +0100
 
 display-kiosk (0.0.8) squeeze; urgency=low
 
   * Remove minimize button from unlock dialog
 
- -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Thu, 19 Dec 2013 12:40:00 +0200
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Thu, 19 Dec 2013 12:40:00 +0100
 
 display-kiosk (0.0.7) squeeze; urgency=low
 
@@ -45,26 +44,26 @@ display-kiosk (0.0.7) squeeze; urgency=low
   * Fix comment style in display-kiosk.ini example
   * Fix casing in display-kiosk.desktop
 
- -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Fri, 13 Dec 2013 19:13:00 +0200
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Fri, 13 Dec 2013 19:13:00 +0100
 
 display-kiosk (0.0.6) squeeze; urgency=low
 
   * Add an example xsessionrc to disable display blanking.
 
- -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Fri, 13 Dec 2013 16:40:00 +0200
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Fri, 13 Dec 2013 16:40:00 +0100
 
 display-kiosk (0.0.5) squeeze; urgency=low
 
   * Release on debian squeeze.
 
- -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Fri, 06 Dec 2013 21:01:00 +0200
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Fri, 06 Dec 2013 21:01:00 +0100
 
 display-kiosk (0.0.4) unstable; urgency=low
 
   * Document auto reload option.
   * Add menu file.
 
- -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Tue, 03 Dec 2013 21:33:00 +0200
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Tue, 03 Dec 2013 21:33:00 +0100
 
 display-kiosk (0.0.3) unstable; urgency=low
 
@@ -73,16 +72,16 @@ display-kiosk (0.0.3) unstable; urgency=low
   * Remove superflous commas in maintainer name.
   * Remove inherited debian package section.
 
- -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Sat, 15 Nov 2013 16:27:00 +0200
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Sat, 15 Nov 2013 16:27:00 +0100
 
 display-kiosk (0.0.2) unstable; urgency=low
 
   * Add sample lxde-rc.xml configuration.
 
- -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Sun, 25 Aug 2013 10:21:00 +0200
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Sun, 25 Aug 2013 10:21:00 +0100
 
 display-kiosk (0.0.1) unstable; urgency=low
 
   * Initial release.
 
- -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Fri, 16 Aug 2013 15:36:09 +0200
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Fri, 16 Aug 2013 15:36:09 +0100
