@@ -130,41 +130,33 @@ class Kiosk(QStackedWidget):
         self.settings = settings
         self.reset()
 
-        self.idleTimer = QTimer()
-        self.idleTimer.timeout.connect(self.onIdleTimeout)
-
-        self.countdownTimer = QTimer()
-        self.countdownTimer.timeout.connect(self.onCountdownTimeout)
-        self.countdown = None
+        self.reloadTimer = QTimer()
+        self.reloadTimer.timeout.connect(self.onReloadTimeout)
+        if self.settings.auto_reload:
+            self.reloadCountdown = self.settings.auto_reload
+            self.reloadTimer.start(1000)
 
         self.notIdle()
 
-    def onIdleTimeout(self):
-        self.countdownTimer.start(1000)
+    def onReloadTimeout(self):
+        self.reloadCountdown -= 1
 
-    def onCountdownTimeout(self):
-        self.countdown -= 1
+        if self.reloadCountdown <= 30:
+            for i in range(0, self.count()):
+                tab = self.widget(i)
+                tab.resetAction.setText("%s (%d)" % (self.settings.reset_text, self.reloadCountdown))
 
-        for i in range(0, self.count()):
-            tab = self.widget(i)
-            tab.resetAction.setText("%s (%d)" % (self.settings.reset_text, self.countdown))
-
-        if self.countdown <= 0:
+        if self.reloadCountdown <= 0:
             self.reset()
             self.notIdle()
 
     def notIdle(self):
-        if self.settings.auto_reload:
-            if self.countdownTimer.isActive():
-                for i in range(0, self.count()):
-                    tab = self.widget(i)
-                    tab.resetAction.setText("%s" % self.settings.reset_text)
+        if self.reloadCountdown <= 30:
+            for i in range(0, self.count()):
+                tab = self.widget(i)
+                tab.resetAction.setText("%s" % self.settings.reset_text)
 
-                self.countdown = min(30, self.settings.auto_reload)
-                self.countdownTimer.stop()
-
-            self.idleTimer.stop()
-            self.idleTimer.start(self.settings.auto_reload - min(30, self.settings.auto_reload))
+        self.reloadCountdown = self.settings.auto_reload
 
     def reset(self):
         while self.count():
