@@ -25,10 +25,26 @@ class WebPage(QWebPage):
         return tab.view.page()
 
     def supportsExtension(self, extension):
-        if self.tab.tabs.settings.prevent_upload:
-            return False
+        if extension == QWebPage.ErrorPageExtension:
+            return True
+        elif extension == QWebPage.ChooseMultipleFilesExtension:
+            if self.tab.tabs.settings.prevent_upload:
+                return False
+            else:
+                return super(WebPage, self).supportsExtension(extension)
+
+        return False
+
+    def extension(self, extension, option, output):
+        if extension == QWebPage.ErrorPageExtension:
+            if option.domain == QWebPage.QtNetwork:
+                self.tab.statusBar.showMessage("Network error: %s" % option.errorString)
+            elif option.domain == QWebPage.Http:
+                self.tab.statusBar.showMessage("HTTP error: %s" % option.errorString)
+            elif option.domain == QWebPage.WebKit:
+                self.tab.statusBar.showMessage("WebKit error: %s" % option.errorString)
         else:
-            return super(WebPage, self).supportsExtension(extension)
+            return super(WebPage, self).extension(extension, option, output)
 
     def chooseFile(self, webFrame, suggestedFileName):
         if self.tab.tabs.settings.prevent_upload:
