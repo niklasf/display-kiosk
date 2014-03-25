@@ -1,141 +1,200 @@
-#!/usr/bin/env python
+#!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-__author__ = "Niklas Fiekas"
-__copyright__ = "Copyright 2013, Niklas Fiekas"
-__license__ = "GPL"
-__version__ = "0.1.1"
-__maintainer__ = "Niklas Fiekas"
-__email__ = "niklas.fiekas@tu-clausthal.de"
-__status__ = "Development"
-
-
-import sys
-import getpass
+"""Displays kiosk displays a website in a stripped down kiosk."""
 
 from PySide.QtCore import *
 from PySide.QtGui import *
-from PySide.QtWebKit import *
 from PySide.QtNetwork import *
+from PySide.QtWebKit import *
+
+import sys
+import argparse
 
 
-class Kiosk(QWidget):
-    def __init__(self, settings):
-        super(Kiosk, self).__init__()
-        self.initUnlockBar()
-        self.initLayout()
-        self.initKiosk()
+class WebPage(QWebPage):
+    def __init__(self, tab):
+        super(WebPage, self).__init__()
+        self.tab = tab
 
-    def initLayout(self):
-        layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(layout)
+    def createWindow(self, webWindowType):
+        tab = KioskTab(self.tab.tabs)
 
-        layout.addWidget(self.unlockBar, 0)
+        page = tab.view.page()
+        page.setNetworkAccessManager(self.networkAccessManager())
+        return tab.view.page()
+
+    def supportsExtension(self, extension):
+        if extension == QWebPage.ErrorPageExtension:
+            return True
+        elif extension == QWebPage.ChooseMultipleFilesExtension:
+            if self.tab.tabs.settings.prevent_upload:
+                return False
+            else:
+                return super(WebPage, self).supportsExtension(extension)
+
+        return False
+
+    def extension(self, extension, option, output):
+        if extension == QWebPage.ErrorPageExtension:
+            if option.domain == QWebPage.QtNetwork:
+                self.tab.statusBar.showMessage("Network error: %s" % option.errorString)
+            elif option.domain == QWebPage.Http:
+                self.tab.statusBar.showMessage("HTTP error: %s" % option.errorString)
+            elif option.domain == QWebPage.WebKit:
+                self.tab.statusBar.showMessage("WebKit error: %s" % option.errorString)
+        else:
+            return super(WebPage, self).extension(extension, option, output)
+
+    def chooseFile(self, webFrame, suggestedFileName):
+        if self.tab.tabs.settings.prevent_upload:
+            self.tab.statusBar.showMessage(u"You can not upload files from this display kiosk.")
+        else:
+            return super(WebPage, self).chooseFile(webFrame, suggestedFileName)
+
+    def acceptNavigationRequest(self, frame, request, navigationType):
+        return True
+
+
+class KioskTab(QWidget):
+    def __init__(self, tabs):
+        super(KioskTab, self).__init__()
+        self.tabs = tabs
 
         self.view = QWebView()
-        layout.addWidget(self.view, 1)
-
-    def initUnlockBar(self):
-        unlockBarLayout = QHBoxLayout()
-
-        self.cancelButton = QPushButton("Cancel")
-        self.cancelButton.clicked.connect(self.onCancelButtonClicked)
-        unlockBarLayout.addWidget(self.cancelButton)
-
-        unlockLabel = QLabel("Unlock to close: ")
-        unlockLabel.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        unlockBarLayout.addWidget(unlockLabel, 1)
-
-        self.passwordBox = QLineEdit()
-        self.passwordBox.setEchoMode(QLineEdit.Password)
-        self.passwordBox.installEventFilter(self)
-        unlockBarLayout.addWidget(self.passwordBox)
-
-        try:
-            import PAM
-        except:
-            self.passwordBox.setEnabled(False)
-
-        self.settingsButton = QPushButton("Settings")
-        self.settingsButton.clicked.connect(self.onSettingsButtonClicked)
-        unlockBarLayout.addWidget(self.settingsButton)
-
-        self.closeButton = QPushButton("Close")
-        self.closeButton.setDefault(True)
-        self.closeButton.clicked.connect(self.onCloseButtonClicked)
-        unlockBarLayout.addWidget(self.closeButton)
-
-        self.unlockBar = QWidget()
-        self.unlockBar.setVisible(False)
-        self.unlockBar.setLayout(unlockBarLayout)
-
-    def initKiosk(self):
-        self.page = KioskWebPage()
-        self.view.setPage(self.page)
+        self.view.setPage(WebPage(self))
+        self.view.statusBarMessage.connect(self.onStatusBarMessage)
+        self.view.loadStarted.connect(self.onLoadStarted)
+        self.view.loadProgress.connect(self.onLoadProgress)
+        self.view.loadFinished.connect(self.onLoadFinished)
+        self.view.page().printRequested.connect(self.onPrintRequested)
+        self.view.page().windowCloseRequested.connect(self.onWindowCloseRequested)
+        self.view.setContextMenuPolicy(Qt.NoContextMenu)
         self.view.installEventFilter(self)
 
+        self.statusBar = QStatusBar()
+        self.statusBar.setVisible(not self.tabs.settings.hide_status)
+        self.progressBar = QProgressBar()
+        self.statusBar.addPermanentWidget(self.progressBar)
+
+        self.resetAction = QAction(self.tabs.settings.reset_text, self)
+        self.resetAction.setIcon(self.style().standardIcon(QStyle.SP_BrowserStop))
+        self.resetAction.triggered.connect(self.onResetAction)
+
+        self.backAction = QAction(self)
+        self.backAction.setIcon(self.view.pageAction(QWebPage.Back).icon())
+        self.backAction.triggered.connect(self.onBackAction)
+
+        self.toolBar = QToolBar()
+        self.toolBar.setVisible(not self.tabs.settings.hide_toolbar)
+        self.toolBar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        self.toolBar.addAction(self.resetAction)
+        self.toolBar.addSeparator()
+        self.toolBar.addAction(self.backAction)
+        self.toolBar.addAction(self.view.pageAction(QWebPage.Forward))
+        self.view.pageAction(QWebPage.Forward).setText("")
+        self.toolBar.addSeparator()
+        self.toolBar.addAction(self.view.pageAction(QWebPage.Reload))
+        self.view.pageAction(QWebPage.Reload).setText("")
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.toolBar, 0)
+        layout.addWidget(self.view, 1)
+        layout.addWidget(self.statusBar, 0)
+        self.setLayout(layout)
+        self.layout().setContentsMargins(0, 0, 0, 0)
+
+        i = self.tabs.addWidget(self)
+        self.tabs.setCurrentIndex(i)
+
+    def onResetAction(self):
+        self.tabs.reset()
+
+    def onWindowCloseRequested(self):
+        if self.tabs.count() > 1:
+            self.tabs.removeWidget(self)
+
+    def onStatusBarMessage(self, message):
+        self.statusBar.showMessage(message)
+
+    def onLoadStarted(self):
+        self.progressBar.setVisible(True)
+
+    def onLoadFinished(self, ok):
+        self.progressBar.setVisible(False)
+
+    def onLoadProgress(self, progress):
+        self.progressBar.setValue(progress)
+
+    def onPrintRequested(self, frame):
+        self.statusBar.showMessage(u"You can not print from this display kiosk.")
+
+    def onBackAction(self):
+        if self.view.pageAction(QWebPage.Back).isEnabled():
+            self.view.back()
+        else:
+            self.onWindowCloseRequested()
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.KeyPress or event.type() == QEvent.MouseMove:
+            self.tabs.notIdle()
+
+        return super(KioskTab, self).eventFilter(obj, event)
+
+
+class Kiosk(QStackedWidget):
+    def __init__(self, settings):
+        super(Kiosk, self).__init__()
         self.settings = settings
+        self.reset()
 
-        self.idleTimer = QTimer()
-        self.idleTimer.setInterval(30000)
-        self.idleTimer.timeout.connect(self.onIdleTimeout)
 
-        self.scrollTimer = QTimer()
-        self.scrollTimer.timeout.connect(self.onScrollTimeout)
-
-        self.reloadTimer = QTimer()
-        self.reloadTimer.timeout.connect(self.onReloadTimeout)
-
-        self.page.errorReloadTimer.timeout.connect(self.onErrorReloadTimeout)
-
-        self.reconfigure()
-
-        self.setWindowTitle("Display kiosk")
-        self.setWindowIcon(QIcon("display-kiosk.ico"))
-
-    def reconfigure(self):
-        if self.settings.value("FullScreen") == "true":
-            self.showFullScreen()
+        if self.settings.auto_reload:
+            self.reloadTimer = QTimer()
+            self.reloadTimer.timeout.connect(self.onReloadTimeout)
+            self.reloadTimer.start(1000)
+            self.reloadCountdown = self.settings.auto_reload
         else:
-            self.showNormal()
+            self.reloadCountdown = None
 
-        if self.settings.value("HideCursor") == "true":
-            QApplication.setOverrideCursor(Qt.BlankCursor)
-            self.idleTimer.stop()
-        else:
-            QApplication.setOverrideCursor(Qt.ArrowCursor)
-            self.idleTimer.start()
+        if self.settings.auto_scroll:
+            self.scrollTimer = QTimer()
+            self.scrollTimer.timeout.connect(self.onScrollTimeout)
+            self.scrollTimer.start(self.settings.auto_scroll_interval)
 
-        if self.settings.value("AutoScroll") == "true":
-            self.scrollTimer.start(int(self.settings.value("AutoScrollInterval")))
-        else:
-            self.scrollTimer.stop()
+        self.notIdle()
 
-        if self.settings.value("AutoReload") == "true":
-            self.reloadTimer.start(int(self.settings.value("AutoReloadInterval")))
-        else:
-            self.reloadTimer.stop()
+    def onReloadTimeout(self):
+        self.reloadCountdown -= 1
 
-        proxy = QNetworkProxyFactory.systemProxyForQuery(QNetworkProxyQuery(QUrl(self.settings.value("Url"))))
-        if proxy:
-            QNetworkProxy.setApplicationProxy(proxy[0])
-        self.reloadPage()
+        if self.reloadCountdown <= 30:
+            for i in range(0, self.count()):
+                tab = self.widget(i)
+                tab.resetAction.setText("%s (%d)" % (self.settings.reset_text, max(0, self.reloadCountdown)))
 
-    def reloadPage(self):
-        self.reloadSoon = False
-        self.view.page().mainFrame().load(QUrl(self.settings.value("Url")))
+        if self.reloadCountdown <= 0 and not self.settings.auto_reload:
+            self.reset()
+            self.notIdle()
+
+    def notIdle(self):
+        if self.reloadCountdown <= 30:
+            for i in range(0, self.count()):
+                tab = self.widget(i)
+                tab.resetAction.setText("%s" % self.settings.reset_text)
+
+        self.reloadCountdown = self.settings.auto_reload
 
     def onScrollTimeout(self):
-        frame = self.view.page().mainFrame()
+        frame = self.currentWidget().view.page().mainFrame()
         if not self.scrollFrame(frame):
-            if self.settings.value("AutoScrollReload", "true") == "true" or self.reloadSoon:
-                self.reloadPage()
+            if self.settings.auto_reload and self.reloadCountdown <= 0:
+                self.reset()
+                self.notIdle()
             else:
                 self.resetFrameScrollBars(frame)
 
     def scrollFrame(self, frame):
-        delta = int(self.settings.value("AutoScrollDelta"))
+        delta = self.settings.auto_scroll_delta
         maximum = frame.scrollBarMaximum(Qt.Vertical)
 
         if maximum == 0:
@@ -148,286 +207,97 @@ class Kiosk(QWidget):
                 return False
             else:
                 frame.setScrollBarValue(Qt.Vertical, frame.scrollBarValue(Qt.Vertical) + delta)
-            return True
+                return True
 
     def resetFrameScrollBars(self, frame):
         frame.setScrollBarValue(Qt.Vertical, 0)
         for childFrame in frame.childFrames():
             self.resetFrameScrollBars(childFrame)
 
-    def onReloadTimeout(self):
-        if self.settings.value("AutoScroll") == "true" or self.settings.value("HideCursor") != "true":
-            self.reloadSoon = True
-        else:
-            self.reloadPage()
+    def reset(self):
+        while self.count():
+            self.removeWidget(self.widget(0))
 
-    def onIdleTimeout(self):
-        if self.reloadSoon:
-            self.reloadPage()
-
-    def onErrorReloadTimeout(self):
-        self.reloadPage()
-
-    def onCancelButtonClicked(self):
-        self.hideUnlockBar()
-
-    def onSettingsButtonClicked(self):
-        if self.checkPassword():
-            settingsDialog = SettingsDialog(self.settings, self)
-            if settingsDialog.exec_():
-                self.reconfigure()
-
-            self.hideUnlockBar()
-
-    def onCloseButtonClicked(self):
-        if self.checkPassword():
-            self.hide()
-            self.close()
-
-    def showUnlockBar(self):
-        QApplication.setOverrideCursor(Qt.ArrowCursor)
-        self.unlockBar.setVisible(True)
-        self.passwordBox.setFocus()
-
-    def hideUnlockBar(self):
-        self.unlockBar.setVisible(False)
-        self.passwordBox.setText("")
-
-        if self.settings.value("HideCursor") == "true":
-            QApplication.setOverrideCursor(Qt.BlankCursor)
-        else:
-            QApplication.setOverrideCursor(Qt.ArrowCursor)
+        tab = KioskTab(self)
+        tab.view.page().mainFrame().load(QUrl(self.settings.url))
 
     def closeEvent(self, event):
-        if self.isVisible():
-            self.showUnlockBar()
+        if self.settings.prevent_close:
+            self.reset()
             event.ignore()
+            return False
         else:
-            event.accept()
-
-    def checkPassword(self):
-        try:
-            import PAM
-        except:
-            return True
-
-        self.settingsButton.setEnabled(False)
-        self.cancelButton.setEnabled(False)
-        self.closeButton.setEnabled(False)
-        self.passwordBox.setEnabled(False)
-
-        # Immediately make the buttons appear disabled.
-        while QApplication.hasPendingEvents():
-            QApplication.processEvents()
-
-        try:
-            import PAM
-            auth = PAM.pam()
-            auth.start("passwd")
-            auth.set_item(PAM.PAM_CONV, self.pamConv)
-
-            auth.authenticate()
-            auth.acct_mgmt()
-            return True
-        except PAM.error:
-            self.passwordBox.setEnabled(True)
-            self.passwordBox.selectAll()
-            self.passwordBox.setFocus()
-            return False
-        finally:
-            self.settingsButton.setEnabled(True)
-            self.cancelButton.setEnabled(True)
-            self.closeButton.setEnabled(True)
-            self.passwordBox.setEnabled(True)
-
-    def pamConv(self, auth, queryList, userData):
-        import PAM
-
-        resp = []
-
-        for i in range(len(queryList)):
-            query, mode = queryList[i]
-            if mode == PAM.PAM_PROMPT_ECHO_ON:
-                resp.append((getpass.getuser(), 0))
-            elif mode == PAM.PAM_PROMPT_ECHO_OFF:
-                resp.append((self.passwordBox.text(), 0))
-            elif mode == PAM.PAM_PROMPT_ERROR_MSG or mode == PAM.PAM_PROMPT_TEXT_INFO:
-                resp.append(("", 0))
-            else:
-                return None
-
-        return resp
-
-    def eventFilter(self, obj, event):
-        if event.type() == QEvent.KeyPress or event.type() == QEvent.MouseMove:
-            self.idleTimer.start()
-
-        if obj == self.passwordBox:
-            if event.type() == QEvent.KeyPress:
-                if event.key() == Qt.Key_Escape:
-                    self.hideUnlockBar()
-                elif event.key() == Qt.Key_Return:
-                    self.onCloseButtonClicked()
-        return super(Kiosk, self).eventFilter(obj, event)
-
-
-class KioskWebPage(QWebPage):
-    def __init__(self):
-        super(KioskWebPage, self).__init__()
-
-        self.loadFinished.connect(self.onLoadFinished)
-
-        self.errorReloadTimer = QTimer()
-        self.errorReloadTimer.setSingleShot(True)
-
-        self.errorPageLoaded = True
-
-    def extension(self, extension, option, output):
-        if extension == QWebPage.ErrorPageExtension:
-            if option.domain == QWebPage.QtNetwork:
-                output.content = QByteArray(u"Network error: %s\n" % option.errorString)
-            elif option.domain == QWebPage.Http:
-                output.content = QByteArray(u"HTTP error: %s\n" % option.errorString)
-            elif option.domain == QWebPage.WebKit:
-                output.content = QByteArray(u"WebKit error: %s\n" % option.errorString)
-            output.contentType = "text/plain"
-
-            sys.stderr.write(output.content)
-
-            self.errorReloadTimer.start(5000)
-            self.errorPageLoaded = False
-            return True
-        else:
-            return False
-
-    def supportsExtension(self, extension):
-        if extension == QWebPage.ErrorPageExtension:
-            return True
-        elif extension == QWebPage.ChooseMultipleFilesExtension:
-            return False
-
-        return False
-
-    def onLoadFinished(self, ok):
-        if ok:
-            if not self.errorPageLoaded:
-                self.errorPageLoaded = True
-            else:
-                self.errorReloadTimer.stop()
-
-    def chooseFile(self, parentFrame, suggestedFile):
-        return None
-
-
-class SettingsDialog(QDialog):
-    def __init__(self, settings, parent=None):
-        super(SettingsDialog, self).__init__(parent)
-        self.settings = settings
-
-        layout = QVBoxLayout()
-
-        box = QHBoxLayout()
-        box.addWidget(QLabel("URL:"))
-        self.urlBox = QLineEdit()
-        box.addWidget(self.urlBox)
-        layout.addLayout(box)
-
-        self.fullScreenBox = QCheckBox("Use full screen mode\n(exit with ALT+F4 for most window managers)")
-        layout.addWidget(self.fullScreenBox)
-
-        self.hideCursorBox = QCheckBox("Hide cursor")
-        layout.addWidget(self.hideCursorBox)
-
-        box = QHBoxLayout()
-        self.autoScrollBox = QCheckBox("Automatically scroll")
-        self.autoScrollBox.stateChanged.connect(self.onAutoScrollStateChanged)
-        box.addWidget(self.autoScrollBox)
-        self.autoScrollDeltaBox = QSpinBox()
-        self.autoScrollDeltaBox.setMinimum(0)
-        self.autoScrollDeltaBox.setMaximum(100000)
-        self.autoScrollDeltaBox.setSuffix("px")
-        box.addWidget(self.autoScrollDeltaBox)
-        box.addWidget(QLabel("every"))
-        self.autoScrollIntervalBox = QSpinBox()
-        self.autoScrollIntervalBox.setMinimum(10)
-        self.autoScrollIntervalBox.setMaximum(604800000)
-        self.autoScrollIntervalBox.setSuffix("ms")
-        box.addWidget(self.autoScrollIntervalBox)
-        box.addWidget(QWidget(), 1)
-        layout.addLayout(box)
-
-        self.autoScrollReloadBox = QCheckBox("Always reload when reaching the end")
-        layout.addWidget(self.autoScrollReloadBox)
-
-        box = QHBoxLayout()
-        self.autoReloadBox = QCheckBox("Reload about every")
-        self.autoReloadBox.stateChanged.connect(self.onAutoReloadStateChanged)
-        box.addWidget(self.autoReloadBox)
-        self.autoReloadIntervalBox = QSpinBox()
-        self.autoReloadIntervalBox.setMinimum(10)
-        self.autoReloadIntervalBox.setMaximum(604800000)
-        self.autoReloadIntervalBox.setSuffix("ms")
-        box.addWidget(self.autoReloadIntervalBox)
-        box.addWidget(QWidget(), 1)
-        layout.addLayout(box)
-
-        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        buttons.rejected.connect(self.reject)
-        buttons.accepted.connect(self.onAccepted)
-        layout.addWidget(buttons)
-
-        self.setLayout(layout)
-        self.setWindowTitle("Display kiosk settings")
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
-        self.reset()
-
-    def reset(self):
-        self.urlBox.setText(self.settings.value("Url", "http://"))
-        self.fullScreenBox.setCheckState(Qt.Checked if self.settings.value("FullScreen", "true") == "true" else Qt.Unchecked)
-        self.hideCursorBox.setCheckState(Qt.Checked if self.settings.value("HideCursor", "false") == "true" else Qt.Unchecked)
-        self.autoScrollBox.setCheckState(Qt.Checked if self.settings.value("AutoScroll", "false") == "true" else Qt.Unchecked)
-        self.autoScrollDeltaBox.setValue(int(self.settings.value("AutoScrollDelta", 300)))
-        self.autoScrollIntervalBox.setValue(int(self.settings.value("AutoScrollInterval", 5000)))
-        self.autoReloadBox.setCheckState(Qt.Checked if self.settings.value("AutoReload", "false") == "true" else Qt.Unchecked)
-        self.autoReloadIntervalBox.setValue(int(self.settings.value("AutoReloadInterval", 60000)))
-        self.autoScrollReloadBox.setCheckState(Qt.Checked if self.settings.value("AutoScrollReload", "true") == "true" else Qt.Unchecked)
-
-        self.onAutoScrollStateChanged(self.autoScrollBox.checkState())
-        self.onAutoReloadStateChanged(self.autoReloadBox.checkState())
-
-    def onAccepted(self):
-        url = QUrl.fromUserInput(self.urlBox.text())
-        if not url.isValid():
-            QMessageBox.warning(self, self.windowTitle(), "The given URL is invalid.")
-            self.urlBox.selectAll()
-            return
-
-        self.settings.setValue("Url", url.toString())
-        self.settings.setValue("FullScreen", "true" if self.fullScreenBox.isChecked() else "false")
-        self.settings.setValue("HideCursor", "true" if self.hideCursorBox.isChecked() else "false")
-        self.settings.setValue("AutoScroll", "true" if self.autoScrollBox.isChecked() else "false")
-        self.settings.setValue("AutoScrollDelta", self.autoScrollDeltaBox.value())
-        self.settings.setValue("AutoScrollInterval", self.autoScrollIntervalBox.value())
-        self.settings.setValue("AutoReload", "true" if self.autoReloadBox.isChecked() else "false")
-        self.settings.setValue("AutoReloadInterval", self.autoReloadIntervalBox.value())
-        self.settings.setValue("AutoScrollReload", "true" if self.autoScrollReloadBox.isChecked() else "false")
-        self.accept()
-
-    def onAutoScrollStateChanged(self, state):
-        self.autoScrollDeltaBox.setEnabled(state == Qt.Checked)
-        self.autoScrollIntervalBox.setEnabled(state == Qt.Checked)
-        self.autoScrollReloadBox.setEnabled(state == Qt.Checked)
-
-    def onAutoReloadStateChanged(self, state):
-        self.autoReloadIntervalBox.setEnabled(state == Qt.Checked)
+            return super(Kiosk, self).closeEvent(event)
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    parser = argparse.ArgumentParser(description=__doc__)
 
-    settings = QSettings(QSettings.IniFormat, QSettings.UserScope, "display-kiosk", "display-kiosk")
-    if settings.value("Url") or SettingsDialog(settings).exec_():
+    parser.add_argument("--hide-status",
+        action="store_true",
+        help="""Do not show a status bar.""")
 
-        kiosk = Kiosk(settings)
+    parser.add_argument("--hide-toolbar",
+        action="store_true",
+        help="""Do not show a toolbar.""")
 
-        sys.exit(app.exec_())
+    parser.add_argument("--reset-text",
+        default="Reset",
+        help="""The label of the reset button in the toolbar.""")
+
+    parser.add_argument("--prevent-close",
+        action="store_true",
+        help="""Ignore close events. A window manager might still provide ways
+                to kill a process or minimize a window and must be locked down
+                seperately.""")
+
+    parser.add_argument("--prevent-upload",
+        action="store_true",
+        help="""Do not allow uploading files with upload dialogs.""")
+
+    parser.add_argument("--auto-scroll",
+        action="store_true",
+        help="""Automatically scroll down.""")
+
+    parser.add_argument("--auto-scroll-delta",
+        type=int,
+        default=300,
+        help="""Number of pixels to scroll down per step. Ignored if
+                --auto-scroll is not given. Defaults to 300.""")
+
+    parser.add_argument("--auto-scroll-interval",
+        type=int,
+        default=5000,
+        help="""Enables auto scrolling at the given number of milliseconds per
+                step. Default is 5000.""")
+
+    parser.add_argument("--auto-reload",
+        type=int,
+        default=None,
+        help="""Number of seconds after which the page should be automatically
+                reloaded. Will only reload when keyboard and mouse
+                are idle. Will end all sessions. If auto scrolling is enabled
+                the reload will be  deferred until scrolling reaches the end.
+                The default is not to auto reload at all.""")
+
+    parser.add_argument("--window",
+        action="store_true",
+        help="""Open in a window rather than fullscreen.""")
+
+    parser.add_argument("url",
+        help="""The URL of the website to display.""")
+
+
+    settings = parser.parse_args()
+
+    app = QApplication([])
+
+    kiosk = Kiosk(settings)
+    kiosk.setWindowTitle("Display kiosk")
+    kiosk.setWindowIcon(QIcon("display-kiosk.ico"))
+    if settings.window:
+        kiosk.show()
+    else:
+        kiosk.showFullScreen()
+
+    app.exec_()
