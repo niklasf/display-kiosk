@@ -236,6 +236,10 @@ if __name__ == "__main__":
         epilog="""See /usr/share/doc/display-kiosk/examples for a sample
                   ~/.xinitrc file. Do not forget to make it executable.""")
 
+    parser.add_argument("--hide-cursor",
+        action="store_true",
+        help="""Hide the cursor.""")
+
     parser.add_argument("--hide-status",
         action="store_true",
         help="""Do not show a status bar.""")
@@ -298,6 +302,9 @@ if __name__ == "__main__":
     proxy = QNetworkProxyFactory.systemProxyForQuery(QNetworkProxyQuery(QUrl(settings.url)))
     if proxy:
         QNetworkProxy.setApplicationProxy(proxy[0])
+
+    if settings.hide_cursor:
+        QApplication.setOverrideCursor(Qt.BlankCursor)
 
     kiosk = Kiosk(settings)
     kiosk.setWindowTitle("Display kiosk")
