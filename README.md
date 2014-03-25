@@ -37,7 +37,7 @@ $ sudo apt-get update
 $ sudo apt-get install display-kiosk
 ```
 
-Configuring stand alone
+Configuring
 -----------------------
 
 See `/usr/share/doc/display-kiosk/examples/xinitrc` for an example `~/.xinitrc`
@@ -45,29 +45,6 @@ file. Do not forget to make it executable.
 
 Put `su - username -c startx` in `/etc/rc.local` (usually before `exit 0`) and
 `update-rc.d rc.local defaults`.
-
-Configuring LXDE (used as the default desktop environment of the Raspberry Pi)
-----------------------------------------------------------------------------------
-Configure the Raspberry to automatically start a GUI session on startup. Then
-you can autostart display-kiosk via
-
-```
-$ mkdir -p ~/.config/autostart/
-$ ln -s /usr/share/applications/display-kiosk.desktop ~/.config/autostart/display-kiosk.desktop
-```
-
-X11 might blank the display after a while of inactivity. Put the following in
-`~/.xsessionrc`:
-
-```
-# Disables screen-saver and display blanking.
-xset s off
-xset s noblank
-xset -dpms
-```
-
-See `~/.config/openbox/lxde-rc.xml` for keyboard shortcuts you might want
-to disable.
 
 License
 -------
