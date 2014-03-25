@@ -57,6 +57,7 @@ class KioskTab(QWidget):
         self.view.installEventFilter(self)
 
         self.statusBar = QStatusBar()
+        self.statusBar.setVisible(not self.tabs.settings.hide_status)
         self.progressBar = QProgressBar()
         self.statusBar.addPermanentWidget(self.progressBar)
 
@@ -69,6 +70,7 @@ class KioskTab(QWidget):
         self.backAction.triggered.connect(self.onBackAction)
 
         self.toolBar = QToolBar()
+        self.toolBar.setVisible(not self.tabs.settings.hide_toolbar)
         self.toolBar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.toolBar.addAction(self.resetAction)
         self.toolBar.addSeparator()
