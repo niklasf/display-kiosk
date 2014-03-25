@@ -231,7 +231,10 @@ class Kiosk(QStackedWidget):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        epilog="""See /usr/share/doc/display-kiosk/examples for a sample
+                  ~/.xinitrc file. Do not forget to make it executable.""")
 
     parser.add_argument("--hide-status",
         action="store_true",
