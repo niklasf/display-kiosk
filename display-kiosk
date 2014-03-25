@@ -172,7 +172,7 @@ class Kiosk(QStackedWidget):
                 tab = self.widget(i)
                 tab.resetAction.setText("%s (%d)" % (self.settings.reset_text, max(0, self.reloadCountdown)))
 
-        if self.reloadCountdown <= 0 and not self.settings.auto_reload:
+        if self.reloadCountdown <= 0 and not self.settings.auto_scroll:
             self.reset()
             self.notIdle()
 
