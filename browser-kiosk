@@ -264,6 +264,10 @@ if __name__ == "__main__":
                 the reload will be  deferred until scrolling reaches the end.
                 The default is not to auto reload at all.""")
 
+    parser.add_argument("--window",
+        action="store_true",
+        help="""Open in a window rather than fullscreen.""")
+
     parser.add_argument("url",
         help="""The URL of the website to display.""")
 
@@ -271,6 +275,13 @@ if __name__ == "__main__":
     settings = parser.parse_args()
 
     app = QApplication([])
+
     kiosk = Kiosk(settings)
-    kiosk.showFullScreen()
+    kiosk.setWindowTitle("Display kiosk")
+    kiosk.setWindowIcon(QIcon("display-kiosk.ico"))
+    if settings.window:
+        kiosk.show()
+    else:
+        kiosk.showFullScreen()
+
     app.exec_()
