@@ -10,7 +10,6 @@ Features
  - **Reload automatically** at a configurable interval. If possible this is
    done **at a good moment**, i.e. when the application is idle or autoscrolling
    has reached the end.
- - **Configurable** via UI and config file.
  - Respects system **proxy** settings.
 
 Installation
