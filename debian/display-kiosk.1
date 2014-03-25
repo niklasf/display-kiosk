@@ -4,7 +4,15 @@
 display-kiosk \- Display a website in a stripped down kiosk
 
 .SH SYNOPSIS
-\fIdisplay-kiosk\fR [\-\-thats\-it\-just\-start\-it]
+\fIdisplay-kiosk\fR <url>
+        [\-\-hide\-cursor]
+        [\-\-hide\-status] [\-\-hide-toolbar]
+        [\-\-prevent\-close] [\-\-prevent\-prevent\-upload]
+        [\-\-auto\-scroll
+            [\-\-auto\-scroll\-delta <pixels>]
+            [\-\-auto\-scroll\-interval <milliseconds>] ]
+        [\-\-auto\-reload <seconds>]
+        [\-\-window]
 
 .SH CONFIGURATION
 \fIdisplay-kiosk\fR can be fully configured with the GUI. A dialog will appear
