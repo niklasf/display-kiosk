@@ -1,12 +1,15 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
+"""Displays kiosk displays a website in a stripped down kiosk."""
+
 from PySide.QtCore import *
 from PySide.QtGui import *
 from PySide.QtNetwork import *
 from PySide.QtWebKit import *
 
 import sys
+import argparse
 
 
 class WebPage(QWebPage):
@@ -57,7 +60,7 @@ class KioskTab(QWidget):
         self.progressBar = QProgressBar()
         self.statusBar.addPermanentWidget(self.progressBar)
 
-        self.resetAction = QAction(u"Abmelden nicht vergessen", self)
+        self.resetAction = QAction(self.tabs.settings.reset_text, self)
         self.resetAction.setIcon(self.style().standardIcon(QStyle.SP_BrowserStop))
         self.resetAction.triggered.connect(self.onResetAction)
 
@@ -106,7 +109,7 @@ class KioskTab(QWidget):
         self.progressBar.setValue(progress)
 
     def onPrintRequested(self, frame):
-        self.statusBar.showMessage(u"Sie können von diesem Anzeiger aus nicht drucken!")
+        self.statusBar.showMessage(u"You can not print from this display kiosk.")
 
     def onBackAction(self):
         if self.view.pageAction(QWebPage.Back).isEnabled():
@@ -122,8 +125,9 @@ class KioskTab(QWidget):
 
 
 class Kiosk(QStackedWidget):
-    def __init__(self):
+    def __init__(self, settings):
         super(Kiosk, self).__init__()
+        self.settings = settings
         self.reset()
 
         self.idleTimer = QTimer()
@@ -131,7 +135,7 @@ class Kiosk(QStackedWidget):
 
         self.countdownTimer = QTimer()
         self.countdownTimer.timeout.connect(self.onCountdownTimeout)
-        self.countdown = 30
+        self.countdown = None
 
         self.notIdle()
 
@@ -143,42 +147,98 @@ class Kiosk(QStackedWidget):
 
         for i in range(0, self.count()):
             tab = self.widget(i)
-            tab.resetAction.setText("Abmelden nicht vergessen (%d)" % self.countdown)
+            tab.resetAction.setText("%s (%d)" % (self.settings.reset_text, self.countdown))
 
         if self.countdown <= 0:
             self.reset()
             self.notIdle()
 
     def notIdle(self):
-        if self.countdownTimer.isActive():
-            for i in range(0, self.count()):
-                tab = self.widget(i)
-                tab.resetAction.setText("Abmelden nicht vergessen")
+        if self.settings.auto_reload:
+            if self.countdownTimer.isActive():
+                for i in range(0, self.count()):
+                    tab = self.widget(i)
+                    tab.resetAction.setText("%s" % self.settings.reset_text)
 
-            self.countdown = 30
-            self.countdownTimer.stop()
+                self.countdown = min(30, self.settings.auto_reload)
+                self.countdownTimer.stop()
 
-        self.idleTimer.stop()
-        self.idleTimer.start(60000)
+            self.idleTimer.stop()
+            self.idleTimer.start(self.settings.auto_reload - min(30, self.settings.auto_reload))
 
     def reset(self):
         while self.count():
             self.removeWidget(self.widget(0))
 
         tab = KioskTab(self)
-        tab.view.page().mainFrame().load(QUrl("https://iserv-trg-oha.de/idesk/"))
+        tab.view.page().mainFrame().load(QUrl(self.settings.url))
 
     def closeEvent(self, event):
-        self.reset()
-
-        event.ignore()
-        return False
+        if self.settings.prevent_close:
+            self.reset()
+            event.ignore()
+            return False
+        else:
+            return super(Kiosk, self).closeEvent(event)
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    parser = argparse.ArgumentParser(description=__doc__)
 
-    kiosk = Kiosk()
+    parser.add_argument("--hide-status",
+        action="store_true",
+        help="""Do not show a status bar.""")
+
+    parser.add_argument("--hide-toolbar",
+        action="store_true",
+        help="""Do not show a toolbar.""")
+
+    parser.add_argument("--reset-text",
+        default="Reset",
+        help="""The label of the reset button in the toolbar.""")
+
+    parser.add_argument("--prevent-close",
+        action="store_true",
+        help="""Ignore close events. A window manager might still provide ways
+                to kill a process or minimize a window and must be locked down
+                seperately.""")
+
+    parser.add_argument("--prevent-upload",
+        action="store_true",
+        help="""Do not allow uploading files with upload dialogs.""")
+
+    parser.add_argument("--auto-scroll",
+        action="store_true",
+        help="""Automatically scroll down.""")
+
+    parser.add_argument("--auto-scroll-delta",
+        type=int,
+        default=300,
+        help="""Number of pixels to scroll down per step. Ignored if
+                --auto-scroll is not given. Defaults to 300.""")
+
+    parser.add_argument("--auto-scroll-interval",
+        type=int,
+        default=5000,
+        help="""Enables auto scrolling at the given number of milliseconds per
+                step. Default is 5000.""")
+
+    parser.add_argument("--auto-reload",
+        type=int,
+        default=None,
+        help="""Number of seconds after which the page should be automatically
+                reloaded. Will only reload when keyboard and mouse
+                are idle. Will end all sessions. If auto scrolling is enabled
+                the reload will be  deferred until scrolling reaches the end.
+                The default is not to auto reload at all.""")
+
+    parser.add_argument("url",
+        help="""The URL of the website to display.""")
+
+
+    settings = parser.parse_args()
+
+    app = QApplication([])
+    kiosk = Kiosk(settings)
     kiosk.showFullScreen()
-
     app.exec_()
