@@ -132,11 +132,19 @@ class Kiosk(QStackedWidget):
         self.settings = settings
         self.reset()
 
-        self.reloadTimer = QTimer()
-        self.reloadTimer.timeout.connect(self.onReloadTimeout)
-        self.reloadCountdown = self.settings.auto_reload
+
         if self.settings.auto_reload:
+            self.reloadTimer = QTimer()
+            self.reloadTimer.timeout.connect(self.onReloadTimeout)
             self.reloadTimer.start(1000)
+            self.reloadCountdown = self.settings.auto_reload
+        else:
+            self.reloadCountdown = None
+
+        if self.settings.auto_scroll:
+            self.scrollTimer = QTimer()
+            self.scrollTimer.timeout.connect(self.onScrollTimeout)
+            self.scrollTimer.start(self.settings.auto_scroll_interval)
 
         self.notIdle()
 
@@ -146,9 +154,9 @@ class Kiosk(QStackedWidget):
         if self.reloadCountdown <= 30:
             for i in range(0, self.count()):
                 tab = self.widget(i)
-                tab.resetAction.setText("%s (%d)" % (self.settings.reset_text, self.reloadCountdown))
+                tab.resetAction.setText("%s (%d)" % (self.settings.reset_text, max(0, self.reloadCountdown)))
 
-        if self.reloadCountdown <= 0:
+        if self.reloadCountdown <= 0 and not self.settings.auto_reload:
             self.reset()
             self.notIdle()
 
@@ -159,6 +167,36 @@ class Kiosk(QStackedWidget):
                 tab.resetAction.setText("%s" % self.settings.reset_text)
 
         self.reloadCountdown = self.settings.auto_reload
+
+    def onScrollTimeout(self):
+        frame = self.currentWidget().view.page().mainFrame()
+        if not self.scrollFrame(frame):
+            if self.settings.auto_reload and self.reloadCountdown <= 0:
+                self.reset()
+                self.notIdle()
+            else:
+                self.resetFrameScrollBars(frame)
+
+    def scrollFrame(self, frame):
+        delta = self.settings.auto_scroll_delta
+        maximum = frame.scrollBarMaximum(Qt.Vertical)
+
+        if maximum == 0:
+            for childFrame in frame.childFrames():
+                if self.scrollFrame(childFrame):
+                    return True
+            return False
+        else:
+            if frame.scrollBarValue(Qt.Vertical) >= maximum:
+                return False
+            else:
+                frame.setScrollBarValue(Qt.Vertical, frame.scrollBarValue(Qt.Vertical) + delta)
+                return True
+
+    def resetFrameScrollBars(self, frame):
+        frame.setScrollBarValue(Qt.Vertical, 0)
+        for childFrame in frame.childFrames():
+            self.resetFrameScrollBars(childFrame)
 
     def reset(self):
         while self.count():
