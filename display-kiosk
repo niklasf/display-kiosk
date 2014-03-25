@@ -295,6 +295,10 @@ if __name__ == "__main__":
 
     app = QApplication([])
 
+    proxy = QNetworkProxyFactory.systemProxyForQuery(QNetworkProxyQuery(QUrl(settings.url)))
+    if proxy:
+        QNetworkProxy.setApplicationProxy(proxy[0])
+
     kiosk = Kiosk(settings)
     kiosk.setWindowTitle("Display kiosk")
     kiosk.setWindowIcon(QIcon("display-kiosk.ico"))
