@@ -1,4 +1,4 @@
-.TH DISPLAY-KIOSK 1 16/08/2013 0.0.1 "Display Kiosk Manual"
+.TH DISPLAY-KIOSK 1 16/08/2013 0.2.0 "Display Kiosk Manual"
 
 .SH NAME
 display-kiosk \- Display a website in a stripped down kiosk
@@ -7,39 +7,98 @@ display-kiosk \- Display a website in a stripped down kiosk
 \fIdisplay-kiosk\fR <url>
         [\-\-hide\-cursor]
         [\-\-hide\-status] [\-\-hide-toolbar]
-        [\-\-prevent\-close] [\-\-prevent\-prevent\-upload]
+        [\-\-prevent\-close] [\-\-prevent\-upload]
         [\-\-auto\-scroll
             [\-\-auto\-scroll\-delta <pixels>]
             [\-\-auto\-scroll\-interval <milliseconds>] ]
         [\-\-auto\-reload <seconds>]
         [\-\-window]
 
-.SH CONFIGURATION
-\fIdisplay-kiosk\fR can be fully configured with the GUI. A dialog will appear
-on its first start. You can also open the settings dialog with the "Settings"
-button in the close dialog\&.
+.SH HIDING CHROME
 .sp
-The configuration is usually stored at
-\fI~/.config/display-kiosk/display-kiosk.ini\fR\&.
-.sp
-.if n\{\
+By default the cursor, a status bar and a toolbar will be displayed.
+
+.PP
+\-\-hide\-cursor
 .RS 4
-.\}
-.nf
-[General]
-Url=http://www.example.com
-FullScreen=true
-HideCursor=false
-AutoScroll=false
-AutoScrollDelta=300 ; pixel
-AutoScrollInterval=5000 ; milliseconds
-AutoScrollReload=true ; always reload when reaching the end
-AutoReload=false
-AutoReloadInterval=60000 ; reload about every 60000 milliseconds
-.fi
-.if n\{\
+Hide the cursor.
 .RE
-.\}
+
+.PP
+\-\-hide\-status
+.RS 4
+Hide the status bar.
+.RE
+
+.PP
+\-\-hide\-toolbar
+.RS 4
+Hide the toolbar.
+.RE
+
+.SH LOCK DOWN FEATURES
+
+.PP
+\-\-prevent\-close
+.RS 4
+Ignore window close events. A window manager might still provide ways to
+minimize the window, switch the window or kill a process, so you might need
+to configure that, too, if you are using one.
+.RE
+
+.PP
+\-\-prevent\-upload
+.RS 4
+Do not allow uploading files from the display kiosk.
+.RE
+
+.SH AUTO SCROLLING
+
+.PP
+\-\-auto\-scroll
+.RS 4
+Enable auto scrolling.
+.RE
+
+Once enabled you may configure auto scrolling more finely.
+
+.PP
+\-\-auto\-scroll\-delta <pixels>
+.RS 4
+The number of pixels to scroll at a time. Defaults to 300.
+.RE
+
+.PP
+\-\-auto\-scroll\-interval <milliseconds>
+.RS 4
+The number of milliseconds to wait between scrolling steps. Defaults to 5000.
+.RE
+
+.SH AUTO RELOADING
+
+.PP
+\-\-auto\-reload <seconds>
+.RS 4
+Automatically reload after the given number of seconds. Will only reload if
+mouse and keyboard are idle. If auto scrolling is enabled, reloading will be
+deferred until scrolling reaches the end.
+
+When reloading, session cookies will be cleared, so you can use this on an
+interactive kiosk to automatically logout after a while.
+
+.SH OTHER OPTIONS
+
+.PP
+\-\-window
+.RS 4
+Do not open fullscreen. Use for testing.
+.RE
+
+.PP
+\-\-reset-text <reset-text>
+.RS 4
+The label of the reset button on the toolbar. Defaults to "Reset".
+.RE
 
 .SH COPYRIGHT
 Copyright (c) 2013 Niklas Fiekas <niklas.fiekas@tu-clausthal.de>
