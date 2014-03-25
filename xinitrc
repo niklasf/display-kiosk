@@ -6,4 +6,4 @@ xset s noblank
 xset -dpms
 
 # Start display kiosk.
-exec /usr/bin/display-kiosk
+exec /usr/bin/display-kiosk --auto-reload 5 http://example.com
