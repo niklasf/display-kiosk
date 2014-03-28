@@ -43,6 +43,7 @@ class WebPage(QWebPage):
                 self.tab.statusBar.showMessage("HTTP error: %s" % option.errorString)
             elif option.domain == QWebPage.WebKit:
                 self.tab.statusBar.showMessage("WebKit error: %s" % option.errorString)
+            return False
         else:
             return super(WebPage, self).extension(extension, option, output)
 
