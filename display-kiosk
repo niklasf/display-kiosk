@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-"""Displays kiosk displays a website in a stripped down kiosk."""
+"""Display kiosk displays a website in a stripped down kiosk."""
 
 from PySide.QtCore import *
 from PySide.QtGui import *
