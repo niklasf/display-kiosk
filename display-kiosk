@@ -98,12 +98,11 @@ class KioskTab(QWidget):
         self.toolBar.addAction(self.view.pageAction(QWebPage.Reload))
         self.view.pageAction(QWebPage.Reload).setText("")
 
-        layout = QVBoxLayout()
+        layout = QVBoxLayout(self)
         layout.addWidget(self.toolBar, 0)
         layout.addWidget(self.view, 1)
         layout.addWidget(self.statusBar, 0)
-        self.setLayout(layout)
-        self.layout().setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(0, 0, 0, 0)
 
         i = self.tabs.addWidget(self)
         self.tabs.setCurrentIndex(i)
