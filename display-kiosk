@@ -215,10 +215,14 @@ class Kiosk(QStackedWidget):
             self.resetFrameScrollBars(childFrame)
 
     def reset(self):
-        while self.count():
-            self.removeWidget(self.widget(0))
+        while self.count() > 1:
+            self.removeWidget(self.widget(1))
 
-        tab = KioskTab(self)
+        if not self.count():
+            tab = KioskTab(self)
+        else:
+            tab = self.widget(0)
+            tab.view.setPage(WebPage(tab))
         tab.view.page().mainFrame().load(QUrl(self.settings.url))
 
     def closeEvent(self, event):
