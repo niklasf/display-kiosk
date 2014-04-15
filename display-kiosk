@@ -73,7 +73,7 @@ class KioskTab(QWidget):
         self.view.setContextMenuPolicy(Qt.NoContextMenu)
         self.view.installEventFilter(self)
 
-        self.statusBar = QStatusBar()
+        self.statusBar = QStatusBar(self)
         self.statusBar.setVisible(not self.tabs.settings.hide_status)
         self.progressBar = QProgressBar()
         self.statusBar.addPermanentWidget(self.progressBar)
