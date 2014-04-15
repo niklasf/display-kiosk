@@ -14,7 +14,7 @@ import argparse
 
 class WebPage(QWebPage):
     def __init__(self, tab):
-        super(WebPage, self).__init__()
+        super(WebPage, self).__init__(tab.view)
         self.tab = tab
 
     def createWindow(self, webWindowType):
@@ -113,6 +113,7 @@ class KioskTab(QWidget):
     def onWindowCloseRequested(self):
         if self.tabs.count() > 1:
             self.tabs.removeWidget(self)
+            del self
 
     def onStatusBarMessage(self, message):
         self.statusBar.showMessage(message)
@@ -216,7 +217,9 @@ class Kiosk(QStackedWidget):
 
     def reset(self):
         while self.count() > 1:
-            self.removeWidget(self.widget(1))
+            widget = self.widget(1)
+            self.removeWidget(widget)
+            del widget
 
         if not self.count():
             tab = KioskTab(self)
