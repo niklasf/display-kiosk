@@ -1,6 +1,6 @@
 #include "kiosk.h"
 
-Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent), m_resetText("Reset"), m_url()
+Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent), m_resetText(tr("Reset")), m_url()
 {
     // Initialize members.
     m_preventClose = false;
