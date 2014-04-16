@@ -4,6 +4,7 @@
 WebPage::WebPage(QObject *parent) : QWebPage(parent)
 {
     connect(this, SIGNAL(windowCloseRequested()), this, SLOT(closeWindow()));
+    connect(this, SIGNAL(printRequested(QWebFrame *)), this, SLOT(denyPrintRequest()));
 }
 
 QWebPage *WebPage::createWindow(WebWindowType type)
@@ -80,4 +81,9 @@ QString WebPage::chooseFile(QWebFrame *parentFrame, const QString &suggestedFile
     } else {
         return QWebPage::chooseFile(parentFrame, suggestedFile);
     }
+}
+
+void WebPage::denyPrintRequest()
+{
+    emit statusBarMessage(QString("You can not print from this display kiosk."));
 }

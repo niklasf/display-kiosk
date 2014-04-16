@@ -13,6 +13,9 @@ public:
 public slots:
     void closeWindow();
 
+protected slots:
+    void denyPrintRequest();
+
 protected:
     QString chooseFile(QWebFrame *parentFrame, const QString &suggestedFile);
 
