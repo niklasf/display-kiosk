@@ -47,6 +47,11 @@ Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent)
     // Initial page load.
     reset();
 
+    // Start scroll reload.
+    m_scrollTimer = new QTimer(this);
+    m_scrollTimer->start(1000);
+    connect(m_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollTick()));
+
     // Start reload countdown.
     m_reloadTimer = new QTimer(this);
     m_reloadTimer->start(1000);
@@ -101,6 +106,47 @@ void Kiosk::reloadTick()
         reset();
     } else if (m_reloadCountdown <= 30) {
         m_resetAction->setText(QString("Reset (%1)").arg(m_reloadCountdown));
+    }
+}
+
+void Kiosk::scrollTick()
+{
+    // TODO: Delta
+    if (!scrollFrame(m_view->page()->mainFrame(), 300)) {
+        // TODO: Or auto reload
+        resetFrameScrollBars(m_view->page()->mainFrame());
+    }
+}
+
+void Kiosk::resetFrameScrollBars(QWebFrame *frame)
+{
+    frame->setScrollBarValue(Qt::Vertical, 0);
+
+    for (int i = 0; i < frame->childFrames().count(); i++) {
+        resetFrameScrollBars(frame->childFrames().at(i));
+    }
+}
+
+bool Kiosk::scrollFrame(QWebFrame *frame, int delta)
+{
+    int maximum = frame->scrollBarMaximum(Qt::Vertical);
+
+    if (maximum == 0) {
+        for (int i = 0; i < frame->childFrames().count(); i++) {
+            if (scrollFrame(frame->childFrames().at(i), delta)) {
+                return true;
+            }
+        }
+        return false;
+    } else {
+        int value = frame->scrollBarValue(Qt::Vertical);
+
+        if (value >= maximum) {
+            return false;
+        } else {
+            frame->setScrollBarValue(Qt::Vertical, value + delta);
+            return true;
+        }
     }
 }
 

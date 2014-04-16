@@ -26,8 +26,13 @@ public slots:
     void reset();
     void notIdle();
 
+private:
+    void resetFrameScrollBars(QWebFrame *frame);
+    bool scrollFrame(QWebFrame *frame, int delta);
+
 private slots:
     void reloadTick();
+    void scrollTick();
 
 private:
     QAction *m_resetAction;
@@ -38,6 +43,7 @@ private:
     QWebView *m_view;
 
     QTimer *m_reloadTimer;
+    QTimer *m_scrollTimer;
     int m_reloadCountdown;
 
     QObject *m_pageHolder;
