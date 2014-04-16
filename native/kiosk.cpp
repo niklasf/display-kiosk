@@ -76,7 +76,14 @@ void Kiosk::updateIcon()
 
 void Kiosk::back()
 {
-    m_view->back();
+    if (m_view->pageAction(QWebPage::Back)->isEnabled()) {
+        m_view->back();
+    } else if (m_pageHolder->children().count() > 1) {
+        WebPage *page = qobject_cast<WebPage *>(m_view->page());
+        page->closeWindow();
+    } else {
+        reset();
+    }
 }
 
 void Kiosk::reset()
@@ -164,6 +171,7 @@ void Kiosk::closeEvent(QCloseEvent *event)
 {
     // TODO: Option
     if (false) {
+        reset();
         event->ignore();
     } else {
         QMainWindow::closeEvent(event);
