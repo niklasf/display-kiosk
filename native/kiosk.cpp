@@ -112,3 +112,13 @@ bool Kiosk::eventFilter(QObject *watched, QEvent *event)
 
     return QMainWindow::eventFilter(watched, event);
 }
+
+void Kiosk::closeEvent(QCloseEvent *event)
+{
+    // TODO: Option
+    if (false) {
+        event->ignore();
+    } else {
+        QMainWindow::closeEvent(event);
+    }
+}

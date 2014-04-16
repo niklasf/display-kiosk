@@ -8,6 +8,7 @@
 #include <QToolBar>
 #include <QStyle>
 #include <QEvent>
+#include <QCloseEvent>
 
 class Kiosk : public QMainWindow {
     Q_OBJECT
@@ -17,6 +18,7 @@ public:
     ~Kiosk();
 
     bool eventFilter(QObject *watched, QEvent *event);
+    void closeEvent(QCloseEvent *event);
 
 public slots:
     void updateIcon();
