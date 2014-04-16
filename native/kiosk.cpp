@@ -4,11 +4,12 @@ Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent), m_resetText("Reset"), m_url
 {
     // Initialize members.
     m_preventClose = false;
+    m_autoScrollDelta = 300;
+    m_autoReload = 0;
 
     // Create the status bar.
     m_progressBar = new QProgressBar();
     statusBar()->addPermanentWidget(m_progressBar);
-    // TODO: Hide option
 
     // Create the central widget.
     m_view = new QWebView();
@@ -36,7 +37,6 @@ Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent), m_resetText("Reset"), m_url
 
     // Create the tool bar.
     m_toolBar = addToolBar("Kiosk");
-    // TODO: Hide option
     m_toolBar->setFloatable(false);
     m_toolBar->setMovable(false);
     m_toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -53,7 +53,7 @@ Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent), m_resetText("Reset"), m_url
 
     // Start scroll reload.
     m_scrollTimer = new QTimer(this);
-    m_scrollTimer->start(1000);
+    m_scrollTimer->setInterval(5000);
     connect(m_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollTick()));
 
     // Start reload countdown.
@@ -105,7 +105,7 @@ void Kiosk::reset()
 
 void Kiosk::notIdle()
 {
-    m_reloadCountdown = 35; // TODO: Option
+    m_reloadCountdown = m_autoReload;
     m_resetAction->setText(m_resetText);
 }
 
@@ -114,8 +114,9 @@ void Kiosk::reloadTick()
     m_reloadCountdown--;
 
     if (m_reloadCountdown < 0) {
-        // TODO: Do not if auto scrolling
-        reset();
+        if (!autoScroll()) {
+            reset();
+        }
     } else if (m_reloadCountdown <= 30) {
         m_resetAction->setText(QString("%1 (%2)").arg(m_resetText).arg(m_reloadCountdown));
     }
@@ -123,10 +124,12 @@ void Kiosk::reloadTick()
 
 void Kiosk::scrollTick()
 {
-    // TODO: Delta
-    if (!scrollFrame(m_view->page()->mainFrame(), 300)) {
-        // TODO: Or auto reload
-        resetFrameScrollBars(m_view->page()->mainFrame());
+    if (!scrollFrame(m_view->page()->mainFrame(), m_autoScrollDelta)) {
+        if (autoReload() && m_reloadCountdown < 0) {
+            reset();
+        } else {
+            resetFrameScrollBars(m_view->page()->mainFrame());
+        }
     }
 }
 
@@ -231,4 +234,57 @@ bool Kiosk::preventClose() const
 void Kiosk::setPreventClose(bool preventClose)
 {
     m_preventClose = preventClose;
+}
+
+bool Kiosk::autoScroll() const
+{
+   return m_scrollTimer->isActive();
+}
+
+void Kiosk::setAutoScroll(bool autoScroll)
+{
+    if (autoScroll) {
+        m_scrollTimer->start();
+    } else {
+        m_scrollTimer->stop();
+    }
+}
+
+int Kiosk::autoScrollInterval() const
+{
+    return m_scrollTimer->interval();
+}
+
+void Kiosk::setAutoScrollInterval(int msec)
+{
+    m_scrollTimer->setInterval(msec);
+}
+
+int Kiosk::autoScrollDelta() const
+{
+    return m_autoScrollDelta;
+}
+
+void Kiosk::setAutoScrollDelta(int delta)
+{
+    m_autoScrollDelta = delta;
+}
+
+int Kiosk::autoReload() const
+{
+    return m_autoReload;
+}
+
+void Kiosk::setAutoReload(int sec)
+{
+    if (sec != m_autoReload) {
+        m_autoReload = sec;
+        m_reloadCountdown = m_autoReload;
+    }
+
+    if (m_autoReload) {
+        m_reloadTimer->start();
+    } else {
+        m_reloadTimer->stop();
+    }
 }

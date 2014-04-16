@@ -36,6 +36,18 @@ public:
     bool preventClose() const;
     void setPreventClose(bool preventClose);
 
+    bool autoScroll() const;
+    void setAutoScroll(bool autoScroll);
+    
+    int autoScrollDelta() const;
+    void setAutoScrollDelta(int delta);
+
+    int autoScrollInterval() const;
+    void setAutoScrollInterval(int msec);
+
+    int autoReload() const;
+    void setAutoReload(int sec);
+
 public slots:
     void updateIcon();
     void back();
@@ -70,6 +82,8 @@ private:
     QString m_resetText;
     QUrl m_url;
     bool m_preventClose;
+    int m_autoReload;
+    int m_autoScrollDelta;
 };
 
 #endif
