@@ -7,6 +7,7 @@
 #include <QAction>
 #include <QToolBar>
 #include <QStyle>
+#include <QEvent>
 
 class Kiosk : public QMainWindow {
     Q_OBJECT
@@ -15,10 +16,16 @@ public:
     Kiosk(QWidget *parent = 0);
     ~Kiosk();
 
+    bool eventFilter(QObject *watched, QEvent *event);
+
 public slots:
     void updateIcon();
     void back();
     void reset();
+    void notIdle();
+
+private slots:
+    void reloadTick();
 
 private:
     QAction *m_resetAction;
@@ -27,6 +34,9 @@ private:
 
     QProgressBar *m_progressBar;
     QWebView *m_view;
+
     QTimer *m_reloadTimer;
+    int m_reloadCountdown;
+
     QObject *m_pageHolder;
 };
