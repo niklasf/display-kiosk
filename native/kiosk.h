@@ -25,6 +25,14 @@ public:
     bool eventFilter(QObject *watched, QEvent *event);
     void closeEvent(QCloseEvent *event);
 
+    QToolBar *toolBar() const;
+
+    QString resetText() const;
+    void setResetText(const QString &resetText);
+
+    QUrl url() const;
+    void setUrl(const QUrl &url);
+
 public slots:
     void updateIcon();
     void back();
@@ -47,6 +55,7 @@ private:
     QAction *m_reloadAction;
 
     QProgressBar *m_progressBar;
+    QToolBar *m_toolBar;
     QWebView *m_view;
 
     QTimer *m_reloadTimer;
@@ -54,6 +63,9 @@ private:
     int m_reloadCountdown;
 
     QObject *m_pageHolder;
+
+    QString m_resetText;
+    QUrl m_url;
 };
 
 #endif

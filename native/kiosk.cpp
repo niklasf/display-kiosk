@@ -1,6 +1,6 @@
 #include "kiosk.h"
 
-Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent)
+Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent), m_resetText("Reset")
 {
     // Create the status bar.
     m_progressBar = new QProgressBar();
@@ -19,7 +19,7 @@ Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent)
     setCentralWidget(m_view);
 
     // Create actions for the tool bar.
-    m_resetAction = new QAction("Reset", this);
+    m_resetAction = new QAction(m_resetText, this);
     m_resetAction->setIcon(style()->standardIcon(QStyle::SP_BrowserStop));
     connect(m_resetAction, SIGNAL(triggered()), this, SLOT(reset()));
 
@@ -32,15 +32,15 @@ Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent)
     connect(m_reloadAction, SIGNAL(triggered()), m_view, SLOT(reload()));
 
     // Create the tool bar.
-    QToolBar *toolBar = addToolBar("Kiosk");
+    m_toolBar = addToolBar("Kiosk");
     // TODO: Hide option
-    toolBar->setFloatable(false);
-    toolBar->setMovable(false);
-    toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    toolBar->addAction(m_resetAction);
-    toolBar->addSeparator();
-    toolBar->addAction(m_backAction);
-    toolBar->addAction(m_reloadAction);
+    m_toolBar->setFloatable(false);
+    m_toolBar->setMovable(false);
+    m_toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    m_toolBar->addAction(m_resetAction);
+    m_toolBar->addSeparator();
+    m_toolBar->addAction(m_backAction);
+    m_toolBar->addAction(m_reloadAction);
 
     // Pages are children of this page holder.
     m_pageHolder = new QObject(this);
@@ -60,8 +60,7 @@ Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent)
 
     // Reset reload countdown if not idle.
     this->installEventFilter(this);
-    statusBar()->installEventFilter(this);
-    toolBar->installEventFilter(this);
+    m_toolBar->installEventFilter(this);
     m_view->installEventFilter(this);
 }
 
@@ -94,7 +93,9 @@ void Kiosk::reset()
 
     WebPage *page = new WebPage(m_pageHolder);
     addPage(page);
-    page->mainFrame()->load(QUrl("http://localhost:8080/"));
+    if (m_url.isValid()) {
+        page->mainFrame()->load(m_url);
+    }
 
     notIdle();
 }
@@ -102,7 +103,7 @@ void Kiosk::reset()
 void Kiosk::notIdle()
 {
     m_reloadCountdown = 35; // TODO: Option
-    m_resetAction->setText("Reset");
+    m_resetAction->setText(m_resetText);
 }
 
 void Kiosk::reloadTick()
@@ -113,7 +114,7 @@ void Kiosk::reloadTick()
         // TODO: Do not if auto scrolling
         reset();
     } else if (m_reloadCountdown <= 30) {
-        m_resetAction->setText(QString("Reset (%1)").arg(m_reloadCountdown));
+        m_resetAction->setText(QString("%1 (%2)").arg(m_resetText).arg(m_reloadCountdown));
     }
 }
 
@@ -189,4 +190,33 @@ void Kiosk::showLastPage()
 {
     WebPage *lastPage = qobject_cast<WebPage *>(m_pageHolder->children().last());
     m_view->setPage(lastPage);
+}
+
+QToolBar *Kiosk::toolBar() const
+{
+    return m_toolBar;
+}
+
+QString Kiosk::resetText() const
+{
+    return m_resetText;
+}
+
+void Kiosk::setResetText(const QString &resetText)
+{
+    m_resetAction->setText(resetText);
+    m_resetText = resetText;
+}
+
+QUrl Kiosk::url() const
+{
+    return m_url;
+}
+
+void Kiosk::setUrl(const QUrl &url)
+{
+    if (m_url != url) {
+        m_url = url;
+        reset();
+    }
 }
