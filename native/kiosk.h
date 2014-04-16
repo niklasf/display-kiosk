@@ -4,6 +4,8 @@
 #include <QTimer>
 #include <QProgressBar>
 #include <QStatusBar>
+#include <QAction>
+#include <QToolBar>
 
 class Kiosk : public QMainWindow {
     Q_OBJECT

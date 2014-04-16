@@ -2,6 +2,14 @@
 
 Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent)
 {
+    QAction *resetAction = new QAction("Reset", this);
+    connect(resetAction, SIGNAL(triggered()), this, SLOT(reset()));
+
+    QToolBar *toolBar = addToolBar("Kiosk");
+    toolBar->setFloatable(false);
+    toolBar->setMovable(false);
+    toolBar->addAction(resetAction);
+
     m_progressBar = new QProgressBar();
     statusBar()->addPermanentWidget(m_progressBar);
 
@@ -18,7 +26,7 @@ Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent)
 
     m_reloadTimer = new QTimer(this);
     m_reloadTimer->start(1000);
-    connect(m_reloadTimer, SIGNAL(timeout()), this, SLOT(reset()));
+    // connect(m_reloadTimer, SIGNAL(timeout()), this, SLOT(reset()));
 
     reset();
 }
