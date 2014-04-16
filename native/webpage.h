@@ -1,3 +1,6 @@
+#ifndef WEBPAGE_H
+#define WEBPAGE_H
+
 #include <QApplication>
 #include <QWebPage>
 
@@ -23,3 +26,5 @@ signals:
     void windowCreated(WebPage *page);
     void windowClosed(WebPage *page);
 };
+
+#endif

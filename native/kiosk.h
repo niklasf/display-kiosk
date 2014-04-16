@@ -1,3 +1,6 @@
+#ifndef KIOSK_H
+#define KIOSK_H
+
 #include <QMainWindow>
 #include <QWebView>
 #include <QWebFrame>
@@ -52,3 +55,5 @@ private:
 
     QObject *m_pageHolder;
 };
+
+#endif
