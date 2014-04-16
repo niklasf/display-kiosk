@@ -9,6 +9,7 @@ Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent)
 
     // Create the central widget.
     m_view = new QWebView();
+    m_view->setContextMenuPolicy(Qt::NoContextMenu);
     connect(m_view, SIGNAL(titleChanged(const QString &)), this, SLOT(setWindowTitle(const QString &)));
     connect(m_view, SIGNAL(iconChanged()), this, SLOT(updateIcon()));
     connect(m_view, SIGNAL(loadStarted()), m_progressBar, SLOT(show()));
