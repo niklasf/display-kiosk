@@ -64,9 +64,9 @@ Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent)
     m_view->installEventFilter(this);
 }
 
-Kiosk::~Kiosk()
+/* Kiosk::~Kiosk()
 {
-}
+} */
 
 void Kiosk::updateIcon()
 {
@@ -84,8 +84,8 @@ void Kiosk::reset()
         delete m_pageHolder->children().last();
     }
 
-    QWebPage *page = new QWebPage(m_pageHolder);
-    m_view->setPage(page);
+    WebPage *page = new WebPage(m_pageHolder);
+    addPage(page);
     page->mainFrame()->load(QUrl("http://iserv-trg-oha.de/"));
 
     notIdle();
@@ -167,4 +167,10 @@ void Kiosk::closeEvent(QCloseEvent *event)
     } else {
         QMainWindow::closeEvent(event);
     }
+}
+
+void Kiosk::addPage(WebPage *page)
+{
+    connect(page, SIGNAL(windowCreated(WebPage *)), this, SLOT(addPage(WebPage *)));
+    m_view->setPage(page);
 }

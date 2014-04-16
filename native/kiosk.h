@@ -10,12 +10,14 @@
 #include <QEvent>
 #include <QCloseEvent>
 
+#include "webpage.h"
+
 class Kiosk : public QMainWindow {
     Q_OBJECT
 
 public:
     Kiosk(QWidget *parent = 0);
-    ~Kiosk();
+    // ~Kiosk();
 
     bool eventFilter(QObject *watched, QEvent *event);
     void closeEvent(QCloseEvent *event);
@@ -33,6 +35,7 @@ private:
 private slots:
     void reloadTick();
     void scrollTick();
+    void addPage(WebPage *page);
 
 private:
     QAction *m_resetAction;

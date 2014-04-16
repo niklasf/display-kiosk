@@ -1,5 +1,5 @@
-SOURCES = main.cpp kiosk.cpp
-HEADERS = kiosk.h
+SOURCES = main.cpp kiosk.cpp webpage.cpp
+HEADERS = kiosk.h webpage.h
 
 QT = core gui widgets webkit
 
