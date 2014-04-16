@@ -6,6 +6,7 @@
 #include <QStatusBar>
 #include <QAction>
 #include <QToolBar>
+#include <QStyle>
 
 class Kiosk : public QMainWindow {
     Q_OBJECT
@@ -16,9 +17,14 @@ public:
 
 public slots:
     void updateIcon();
+    void back();
     void reset();
 
 private:
+    QAction *m_resetAction;
+    QAction *m_backAction;
+    QAction *m_reloadAction;
+
     QProgressBar *m_progressBar;
     QWebView *m_view;
     QTimer *m_reloadTimer;
