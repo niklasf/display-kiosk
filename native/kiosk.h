@@ -17,6 +17,13 @@
 
 class Kiosk : public QMainWindow {
     Q_OBJECT
+    Q_PROPERTY(QString resetText READ resetText WRITE setResetText)
+    Q_PROPERTY(QUrl url READ url WRITE setUrl)
+    Q_PROPERTY(bool preventClose READ preventClose WRITE setPreventClose)
+    Q_PROPERTY(bool autoScroll READ autoScroll WRITE setAutoScroll)
+    Q_PROPERTY(int autoScrollDelta READ autoScrollDelta WRITE setAutoScrollDelta)
+    Q_PROPERTY(int autoScrollInterval READ autoScrollInterval WRITE setAutoScrollInterval)
+    Q_PROPERTY(int autoReload READ autoReload WRITE setAutoReload)
 
 public:
     Kiosk(QWidget *parent = 0);
