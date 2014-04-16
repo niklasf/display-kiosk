@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     Kiosk kiosk;
     kiosk.setResetText("hello");
     kiosk.setUrl(QUrl("http://example.com"));
+    kiosk.setPreventClose(true);
     kiosk.show();
 
     return app.exec();

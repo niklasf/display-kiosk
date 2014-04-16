@@ -1,7 +1,10 @@
 #include "kiosk.h"
 
-Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent), m_resetText("Reset")
+Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent), m_resetText("Reset"), m_url()
 {
+    // Initialize members.
+    m_preventClose = false;
+
     // Create the status bar.
     m_progressBar = new QProgressBar();
     statusBar()->addPermanentWidget(m_progressBar);
@@ -170,8 +173,7 @@ bool Kiosk::eventFilter(QObject *watched, QEvent *event)
 
 void Kiosk::closeEvent(QCloseEvent *event)
 {
-    // TODO: Option
-    if (false) {
+    if (m_preventClose) {
         reset();
         event->ignore();
     } else {
@@ -219,4 +221,14 @@ void Kiosk::setUrl(const QUrl &url)
         m_url = url;
         reset();
     }
+}
+
+bool Kiosk::preventClose() const
+{
+    return m_preventClose;
+}
+
+void Kiosk::setPreventClose(bool preventClose)
+{
+    m_preventClose = preventClose;
 }

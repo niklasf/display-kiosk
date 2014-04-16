@@ -33,6 +33,9 @@ public:
     QUrl url() const;
     void setUrl(const QUrl &url);
 
+    bool preventClose() const;
+    void setPreventClose(bool preventClose);
+
 public slots:
     void updateIcon();
     void back();
@@ -66,6 +69,7 @@ private:
 
     QString m_resetText;
     QUrl m_url;
+    bool m_preventClose;
 };
 
 #endif
