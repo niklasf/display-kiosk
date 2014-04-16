@@ -34,7 +34,6 @@ bool WebPage::supportsExtension(Extension extension) const
             return true;
 
         case ChooseMultipleFilesExtension:
-            // TODO: Option.
             return false;
     }
 
@@ -74,13 +73,8 @@ bool WebPage::extension(Extension extension, const ExtensionOption *option, Exte
 
 QString WebPage::chooseFile(QWebFrame *parentFrame, const QString &suggestedFile)
 {
-    // TODO: Option
-    if (true) {
-        emit statusBarMessage(QString("You can not upload files from this display kiosk."));
-        return QString();
-    } else {
-        return QWebPage::chooseFile(parentFrame, suggestedFile);
-    }
+    emit statusBarMessage(QString("You can not upload files from this display kiosk."));
+    return QString();
 }
 
 void WebPage::denyPrintRequest()
