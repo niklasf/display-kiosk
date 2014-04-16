@@ -111,6 +111,10 @@ void Kiosk::notIdle()
 
 void Kiosk::reloadTick()
 {
+    if (!autoReload()) {
+        return;
+    }
+
     m_reloadCountdown--;
 
     if (m_reloadCountdown < 0) {
