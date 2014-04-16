@@ -44,20 +44,19 @@ Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent)
     // Pages are children of this page holder.
     m_pageHolder = new QObject(this);
 
-    m_reloadTimer = new QTimer(this);
-    m_reloadTimer->start(1000);
-    connect(m_reloadTimer, SIGNAL(timeout()), this, SLOT(reloadTick()));
-    m_reloadCountdown = 40; // TODO: Option
-
     // Initial page load.
     reset();
 
-    // See if idle.
+    // Start reload countdown.
+    m_reloadTimer = new QTimer(this);
+    m_reloadTimer->start(1000);
+    connect(m_reloadTimer, SIGNAL(timeout()), this, SLOT(reloadTick()));
+
+    // Reset reload countdown if not idle.
     this->installEventFilter(this);
     statusBar()->installEventFilter(this);
     toolBar->installEventFilter(this);
     m_view->installEventFilter(this);
-    notIdle();
 }
 
 Kiosk::~Kiosk()
@@ -83,20 +82,25 @@ void Kiosk::reset()
     QWebPage *page = new QWebPage(m_pageHolder);
     m_view->setPage(page);
     page->mainFrame()->load(QUrl("http://iserv-trg-oha.de/"));
+
+    notIdle();
 }
 
 void Kiosk::notIdle()
 {
     m_reloadCountdown = 35; // TODO: Option
-    m_resetAction->setText("Reload");
+    m_resetAction->setText("Reset");
 }
 
 void Kiosk::reloadTick()
 {
     m_reloadCountdown--;
 
-    if (m_reloadCountdown <= 30) {
-        m_resetAction->setText(QString("Reload (%1)").arg(m_reloadCountdown));
+    if (m_reloadCountdown < 0) {
+        // TODO: Do not if auto scrolling
+        reset();
+    } else if (m_reloadCountdown <= 30) {
+        m_resetAction->setText(QString("Reset (%1)").arg(m_reloadCountdown));
     }
 }
 
