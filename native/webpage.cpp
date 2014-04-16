@@ -70,3 +70,14 @@ bool WebPage::extension(Extension extension, const ExtensionOption *option, Exte
 
     return QWebPage::extension(extension, option, output);
 }
+
+QString WebPage::chooseFile(QWebFrame *parentFrame, const QString &suggestedFile)
+{
+    // TODO: Option
+    if (true) {
+        emit statusBarMessage(QString("You can not upload files from this display kiosk."));
+        return QString();
+    } else {
+        return QWebPage::chooseFile(parentFrame, suggestedFile);
+    }
+}

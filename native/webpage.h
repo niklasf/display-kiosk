@@ -13,6 +13,9 @@ public:
 public slots:
     void closeWindow();
 
+protected:
+    QString chooseFile(QWebFrame *parentFrame, const QString &suggestedFile);
+
 signals:
     void windowCreated(WebPage *page);
     void windowClosed(WebPage *page);
