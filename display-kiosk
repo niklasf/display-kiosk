@@ -113,7 +113,7 @@ class KioskTab(QWidget):
     def onWindowCloseRequested(self):
         if self.tabs.count() > 1:
             self.tabs.removeWidget(self)
-            del self
+            self.view.setPage(None)
 
     def onStatusBarMessage(self, message):
         self.statusBar.showMessage(message)
@@ -216,16 +216,12 @@ class Kiosk(QStackedWidget):
             self.resetFrameScrollBars(childFrame)
 
     def reset(self):
-        while self.count() > 1:
-            widget = self.widget(1)
+        while self.count() > 0:
+            widget = self.widget(0)
             self.removeWidget(widget)
-            del widget
+            widget.view.setPage(None)
 
-        if not self.count():
-            tab = KioskTab(self)
-        else:
-            tab = self.widget(0)
-            tab.view.setPage(WebPage(tab))
+        tab = KioskTab(self)
         tab.view.page().mainFrame().load(QUrl(self.settings.url))
 
     def closeEvent(self, event):
