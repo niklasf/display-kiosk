@@ -172,5 +172,12 @@ void Kiosk::closeEvent(QCloseEvent *event)
 void Kiosk::addPage(WebPage *page)
 {
     connect(page, SIGNAL(windowCreated(WebPage *)), this, SLOT(addPage(WebPage *)));
+    connect(page, SIGNAL(windowClosed(WebPage *)), this, SLOT(showLastPage()));
     m_view->setPage(page);
+}
+
+void Kiosk::showLastPage()
+{
+    WebPage *lastPage = qobject_cast<WebPage *>(m_pageHolder->children().last());
+    m_view->setPage(lastPage);
 }

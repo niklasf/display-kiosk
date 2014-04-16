@@ -2,6 +2,7 @@
 
 WebPage::WebPage(QObject *parent) : QWebPage(parent)
 {
+    connect(this, SIGNAL(windowCloseRequested()), this, SLOT(closeWindow()));
 }
 
 QWebPage *WebPage::createWindow(WebWindowType type)
@@ -13,4 +14,13 @@ QWebPage *WebPage::createWindow(WebWindowType type)
     emit windowCreated(page);
 
     return page;
+}
+
+void WebPage::closeWindow()
+{
+    if (parent()->children().indexOf(this) != 0) {
+        setParent(QApplication::instance());
+        emit windowClosed(this);
+        deleteLater();
+    }
 }

@@ -27,6 +27,7 @@ public slots:
     void back();
     void reset();
     void notIdle();
+    void showLastPage();
 
 private:
     void resetFrameScrollBars(QWebFrame *frame);
