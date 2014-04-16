@@ -86,7 +86,7 @@ void Kiosk::reset()
 
     WebPage *page = new WebPage(m_pageHolder);
     addPage(page);
-    page->mainFrame()->load(QUrl("http://iserv-trg-oha.de/"));
+    page->mainFrame()->load(QUrl("http://localhost:8080/"));
 
     notIdle();
 }

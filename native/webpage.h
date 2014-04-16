@@ -7,6 +7,8 @@ class WebPage : public QWebPage {
 public:
     WebPage(QObject *parent = 0);
     QWebPage *createWindow(WebWindowType type);
+    bool supportsExtension(Extension extension) const;
+    bool extension(Extension extension, const ExtensionOption *option = 0, ExtensionReturn *output = 0);
 
 public slots:
     void closeWindow();
