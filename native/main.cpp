@@ -34,6 +34,12 @@ int main(int argc, char *argv[])
         QCoreApplication::translate("main", "Do not show a toolbar."));
     parser.addOption(hideToolbarOption);
 
+    QCommandLineOption resetTextOption("reset-text",
+        QCoreApplication::translate("main", "The label of the reset button in the toolbar."),
+        "reset-text",
+        QCoreApplication::translate("main", "Reset"));
+    parser.addOption(resetTextOption);
+
     parser.process(app);
 
     if (parser.isSet(hideCursorOption)) {
@@ -43,7 +49,7 @@ int main(int argc, char *argv[])
     Kiosk kiosk;
     kiosk.statusBar()->setVisible(!parser.isSet(hideStatusOption));
     kiosk.toolBar()->setVisible(!parser.isSet(hideToolbarOption));
-    kiosk.setResetText("hello");
+    kiosk.setResetText(parser.value(resetTextOption));
     kiosk.setUrl(QUrl("http://example.com"));
     kiosk.setPreventClose(parser.isSet(preventCloseOption));
     kiosk.setAutoScroll(true);
