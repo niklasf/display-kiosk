@@ -1,27 +1,19 @@
 Source: display-kiosk
-Section: python
+Section: web
 Priority: optional
 Maintainer: Niklas Fiekas <niklas.fiekas@tu-clausthal.de>
-Build-Depends: debhelper (>= 8), python, imagemagick
-Standards-Version: 3.9.4
+Build-Depends: debhelper (>= 8), qt4-qmake, libqt4-dev
+Standards-Version: 3.9.5.0
 
 Package: display-kiosk
 Architecture: all
-Depends:
- python2.7,
- python-pyside.qtcore,
- python-pyside.qtgui,
- python-pyside.qtnetwork,
- python-pyside.qtwebkit,
- python-pam,
- ${misc:Depends},
- ${python:Depends}
+Depends: libqt4-core, libqt4-gui, libqt4-network, libqt4-webkit, ${misc:Depends}
 Recommends: x11-xserver-utils
 Description: Display a website in a stripped down kiosk
- Display kiosk allows you to show a website fullscreen without any chrome
- around.
+ Display kiosk allows you to show a website fullscreen in a stripped down kiosk.
  .
- You can configure it to automatically scroll down at the desired speed.
- Whenever it reaches the bottom of the page it reloads and goes back up.
+ It can automatically reload the website at a configured interval. It can also
+ be configured to scroll down at a specified speed.
  .
- Uses include showing news on a public monitor.
+ Uses include showing news on a public monitor or providing a locked down kiosk
+ for browsing.

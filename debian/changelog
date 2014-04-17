@@ -1,3 +1,11 @@
+display-kiosk (0.3.0) wheezy; urgency=low
+
+  * Port to C++
+  * Fix memory leaks
+  * Remove --prevent-upload and make it mandatory
+
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Thu, 17 Apr 2014 14:30:00 +0100
+
 display-kiosk (0.2.1) wheezy; urgency=low
 
   * Add missing return for error page extension.
