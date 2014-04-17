@@ -1,5 +1,7 @@
 #include <QApplication>
 
+#include <stdio.h>
+
 #include "qcommandlineparser.h"
 #include "kiosk.h"
 
@@ -44,15 +46,61 @@ int main(int argc, char *argv[])
         QCoreApplication::translate("main", "Automatically scroll down."));
     parser.addOption(autoScrollOption);
 
-    //QCommandLineOption autoScrollDeltaOption("auto-scroll-delta",
-        //QCoreApplication::translate("main", "Number of pixels to scroll down per step. Ignored if --auto-scroll is not given. Defaults to 300."),
-        //"pixels", "300);
+    QCommandLineOption autoScrollDeltaOption("auto-scroll-delta",
+        QCoreApplication::translate("main", "Number of pixels to scroll down per step. Ignored if --auto-scroll is not given. Defaults to 300."),
+        "pixels", "300");
+    parser.addOption(autoScrollDeltaOption);
+
+    QCommandLineOption autoScrollIntervalOption("auto-scroll-interval",
+        QCoreApplication::translate("main", "Milliseconds to wait between auto scrolling steps. Ignored if --auto-scroll is not given. Defaults to 5000."),
+        "millis", "5000");
+    parser.addOption(autoScrollIntervalOption);
+
+    QCommandLineOption autoReloadOption("auto-reload",
+        QCoreApplication::translate("main", "Number of seconds ater which the page should be automatically reloaded. Will only reload when keyboard and mouse are idle. Will end all sessions. If auto scrolling is enabled, the reload will be deferred until scrolling reaches the end. The default is not to reload at all."),
+        "seconds", "0");
+    parser.addOption(autoReloadOption);
 
     QCommandLineOption windowOption("window",
         QCoreApplication::translate("main", "Open in a window rather than fullscreen."));
     parser.addOption(windowOption);
 
     parser.process(app);
+
+    bool ok;
+
+    int autoScrollDelta = parser.value(autoScrollDeltaOption).toInt(&ok);
+    if (autoScrollDelta < 0 || !ok) {
+        fprintf(stderr, "%s\n", qPrintable(
+            QCoreApplication::translate("main", "Expected a positive number of pixels for '--auto-scroll-delta'.")));
+        return EXIT_FAILURE;
+    }
+
+    int autoScrollInterval = parser.value(autoScrollIntervalOption).toInt(&ok);
+    if (autoScrollInterval <= 0 || !ok) {
+        fprintf(stderr, "%s\n", qPrintable(
+            QCoreApplication::translate("main", "Expected a positive number of milliseconds for '--auto-scroll-interval'.")));
+        return EXIT_FAILURE;
+    }
+
+    int autoReload = parser.value(autoReloadOption).toInt(&ok);
+    if (autoReload < 0 || !ok) {
+        fprintf(stderr, "%s\n", qPrintable(
+            QCoreApplication::translate("main", "Expected 0 or a positive number of seconds for '--auto-reload'.")));
+        return EXIT_FAILURE;
+    }
+
+    if (parser.positionalArguments().count() != 1) {
+        fprintf(stderr, "%s\n", qPrintable(
+            QCoreApplication::translate("main", "Expected extacly one URL as an argument.")));
+        return EXIT_FAILURE;
+    }
+    QUrl url(parser.positionalArguments().at(0));
+    if (!url.isValid()) {
+        fprintf(stderr, "%s\n", qPrintable(
+            QCoreApplication::translate("main", "URL is invalid.")));
+        return EXIT_FAILURE;
+    }
 
     if (parser.isSet(hideCursorOption)) {
         app.setOverrideCursor(Qt::BlankCursor);
@@ -64,9 +112,10 @@ int main(int argc, char *argv[])
     kiosk.setResetText(parser.value(resetTextOption));
     kiosk.setPreventClose(parser.isSet(preventCloseOption));
     kiosk.setAutoScroll(parser.isSet(autoScrollOption));
-    //kiosk.setAutoScrollDelta(parser.value(autoScrollDeltaOption));
-    kiosk.setUrl(QUrl("http://example.com"));
-    kiosk.setAutoReload(3);
+    kiosk.setAutoScrollDelta(autoScrollDelta);
+    kiosk.setAutoScrollInterval(autoScrollInterval);
+    kiosk.setAutoReload(autoReload);
+    kiosk.setUrl(url);
 
     if (parser.isSet(windowOption)) {
         kiosk.show();
