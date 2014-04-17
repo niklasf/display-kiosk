@@ -26,6 +26,10 @@ int main(int argc, char *argv[])
         QCoreApplication::translate("main", "Ignore close events. A window manager might still provide ways to kill a process or minimize a window and must be locked down seperately."));
     parser.addOption(preventCloseOption);
 
+    QCommandLineOption hideStatusOption("hide-status",
+        QCoreApplication::translate("main", "Do not show a status bar."));
+    parser.addOption(hideStatusOption);
+
     parser.process(app);
 
     if (parser.isSet(hideCursorOption)) {
@@ -33,6 +37,7 @@ int main(int argc, char *argv[])
     }
 
     Kiosk kiosk;
+    kiosk.statusBar()->setVisible(!parser.isSet(hideStatusOption));
     kiosk.setResetText("hello");
     kiosk.setUrl(QUrl("http://example.com"));
     kiosk.setPreventClose(parser.isSet(preventCloseOption));
