@@ -30,6 +30,10 @@ int main(int argc, char *argv[])
         QCoreApplication::translate("main", "Do not show a status bar."));
     parser.addOption(hideStatusOption);
 
+    QCommandLineOption hideToolbarOption("hide-toolbar",
+        QCoreApplication::translate("main", "Do not show a toolbar."));
+    parser.addOption(hideToolbarOption);
+
     parser.process(app);
 
     if (parser.isSet(hideCursorOption)) {
@@ -38,6 +42,7 @@ int main(int argc, char *argv[])
 
     Kiosk kiosk;
     kiosk.statusBar()->setVisible(!parser.isSet(hideStatusOption));
+    kiosk.toolBar()->setVisible(!parser.isSet(hideToolbarOption));
     kiosk.setResetText("hello");
     kiosk.setUrl(QUrl("http://example.com"));
     kiosk.setPreventClose(parser.isSet(preventCloseOption));
