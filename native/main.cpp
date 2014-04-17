@@ -22,10 +22,6 @@ int main(int argc, char *argv[])
         QCoreApplication::translate("main", "Hide the cursor."));
     parser.addOption(hideCursorOption);
 
-    QCommandLineOption preventCloseOption("prevent-close",
-        QCoreApplication::translate("main", "Ignore close events. A window manager might still provide ways to kill a process or minimize a window and must be locked down seperately."));
-    parser.addOption(preventCloseOption);
-
     QCommandLineOption hideStatusOption("hide-status",
         QCoreApplication::translate("main", "Do not show a status bar."));
     parser.addOption(hideStatusOption);
@@ -40,6 +36,22 @@ int main(int argc, char *argv[])
         QCoreApplication::translate("main", "Reset"));
     parser.addOption(resetTextOption);
 
+    QCommandLineOption preventCloseOption("prevent-close",
+        QCoreApplication::translate("main", "Ignore close events. A window manager might still provide ways to kill a process or minimize a window and must be locked down seperately."));
+    parser.addOption(preventCloseOption);
+
+    QCommandLineOption autoScrollOption("auto-scroll",
+        QCoreApplication::translate("main", "Automatically scroll down."));
+    parser.addOption(autoScrollOption);
+
+    //QCommandLineOption autoScrollDeltaOption("auto-scroll-delta",
+        //QCoreApplication::translate("main", "Number of pixels to scroll down per step. Ignored if --auto-scroll is not given. Defaults to 300."),
+        //"pixels", "300);
+
+    QCommandLineOption windowOption("window",
+        QCoreApplication::translate("main", "Open in a window rather than fullscreen."));
+    parser.addOption(windowOption);
+
     parser.process(app);
 
     if (parser.isSet(hideCursorOption)) {
@@ -50,11 +62,17 @@ int main(int argc, char *argv[])
     kiosk.statusBar()->setVisible(!parser.isSet(hideStatusOption));
     kiosk.toolBar()->setVisible(!parser.isSet(hideToolbarOption));
     kiosk.setResetText(parser.value(resetTextOption));
-    kiosk.setUrl(QUrl("http://example.com"));
     kiosk.setPreventClose(parser.isSet(preventCloseOption));
-    kiosk.setAutoScroll(true);
+    kiosk.setAutoScroll(parser.isSet(autoScrollOption));
+    //kiosk.setAutoScrollDelta(parser.value(autoScrollDeltaOption));
+    kiosk.setUrl(QUrl("http://example.com"));
     kiosk.setAutoReload(3);
-    kiosk.show();
+
+    if (parser.isSet(windowOption)) {
+        kiosk.show();
+    } else {
+        kiosk.showFullScreen();
+    }
 
     return app.exec();
 }
