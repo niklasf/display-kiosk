@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QNetworkProxyFactory>
 
 #include <stdio.h>
 
@@ -105,6 +106,8 @@ int main(int argc, char *argv[])
     if (parser.isSet(hideCursorOption)) {
         app.setOverrideCursor(Qt::BlankCursor);
     }
+
+    QNetworkProxyFactory::setUseSystemConfiguration(true);
 
     Kiosk kiosk;
     kiosk.statusBar()->setVisible(!parser.isSet(hideStatusOption));

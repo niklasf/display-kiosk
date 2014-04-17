@@ -5,6 +5,6 @@ SOURCES = \
 HEADERS = kiosk.h webpage.h \
     qcommandlineoption.h qcommandlineparser.h
 
-QT += core gui webkit
+QT += core gui webkit network
 
 CONFIG += qt
