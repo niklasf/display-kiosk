@@ -5,7 +5,9 @@ debian/display-kiosk/
 debian/files
 
 moc_*
-
+Makefile
+display-kiosk
 *.o
+
 *.swp
 *.un~
