@@ -1,5 +1,6 @@
 #include <QApplication>
 
+#include "qcommandlineparser.h"
 #include "kiosk.h"
 
 int main(int argc, char *argv[])
@@ -7,6 +8,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     app.setApplicationName("display-kiosk");
     app.setApplicationVersion("0.3.0");
+
 
     Kiosk kiosk;
     kiosk.setResetText("hello");

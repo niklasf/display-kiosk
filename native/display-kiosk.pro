@@ -1,6 +1,10 @@
-SOURCES = main.cpp kiosk.cpp webpage.cpp
-HEADERS = kiosk.h webpage.h
+SOURCES = \
+    main.cpp kiosk.cpp webpage.cpp \
+    qcommandlineoption.cpp qcommandlineparser.cpp
 
-QT = core gui widgets webkit
+HEADERS = kiosk.h webpage.h \
+    qcommandlineoption.h qcommandlineparser.h
+
+QT += core gui webkit
 
 CONFIG += qt
