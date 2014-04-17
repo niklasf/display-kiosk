@@ -18,11 +18,19 @@ int main(int argc, char *argv[])
     parser.addPositionalArgument("url",
         QCoreApplication::translate("main", "The URL of the website to display."));
 
+    QCommandLineOption hideCursorOption("hide-cursor",
+        QCoreApplication::translate("main", "Hide the cursor."));
+    parser.addOption(hideCursorOption);
+
     QCommandLineOption preventCloseOption("prevent-close",
         QCoreApplication::translate("main", "Ignore close events. A window manager might still provide ways to kill a process or minimize a window and must be locked down seperately."));
     parser.addOption(preventCloseOption);
 
     parser.process(app);
+
+    if (parser.isSet(hideCursorOption)) {
+        app.setOverrideCursor(Qt::BlankCursor);
+    }
 
     Kiosk kiosk;
     kiosk.setResetText("hello");
