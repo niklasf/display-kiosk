@@ -42,33 +42,44 @@ bool WebPage::supportsExtension(Extension extension) const
 
 bool WebPage::extension(Extension extension, const ExtensionOption *option, ExtensionReturn *output)
 {
-    const ErrorPageExtensionOption *error;
+    if (extension == ErrorPageExtension) {
+        const ErrorPageExtensionOption *errorOption = static_cast<const ErrorPageExtensionOption *>(option);
+        ErrorPageExtensionReturn *errorOutput = static_cast<ErrorPageExtensionReturn *>(output);
 
-    switch (extension) {
-        case ErrorPageExtension:
-            error = static_cast<const ErrorPageExtensionOption *>(option);
+        errorOutput->baseUrl = errorOption->url;
 
-            switch (error->domain) {
-                case QtNetwork:
-                    emit statusBarMessage(QString("Network error: %1").arg(error->errorString));
-                    break;
+        QString errorPage;
+        errorPage += "<html>";
+        errorPage += "  <body>";
+        errorPage += "    <div style=\"margin: 30px; text-align: center; font-family: arial; font-size: 50pt;\">";
+        errorPage += "      <p style=\"color: #aaa; margin: 5px;\">%1 #%2:</p>";
+        errorPage += "      <p style=\"margin: 5px;\">%3</p>";
+        errorPage += "      <p style=\"margin: 10px; font-size: 100pt;\">&#9785;</p>";
+        errorPage += "    </div>";
+        errorPage += "  </body>";
+        errorPage += "</html>";
 
-                case Http:
-                    emit statusBarMessage(QString("HTTP error: %1").arg(error->errorString));
-                    break;
+        switch (errorOption->domain) {
+            case QtNetwork:
+                errorPage = errorPage.arg("Network error");
+                break;
+            case Http:
+                errorPage = errorPage.arg("HTTP error");
+                break;
+            case WebKit:
+                errorPage = errorPage.arg("WebKit error");
+                break;
+            default:
+                errorPage = errorPage.arg("Error");
+                break;
+        }
 
-                case WebKit:
-                    emit statusBarMessage(QString("WebKit error: %1").arg(error->errorString));
-                    break;
-            }
+        errorOutput->content = errorPage.arg(errorOption->error).arg(errorOption->errorString).toUtf8();
 
-            return false;
-
-        case ChooseMultipleFilesExtension:
-            break;
+        return true;
     }
 
-    return QWebPage::extension(extension, option, output);
+    return false;
 }
 
 QString WebPage::chooseFile(QWebFrame *parentFrame, const QString &suggestedFile)
