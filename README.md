@@ -36,8 +36,17 @@ $ sudo apt-get update
 $ sudo apt-get install display-kiosk
 ```
 
+Building from source
+--------------------
+
+```
+sudo apt-get installl ibqt4-dev libqtwebkit-dev
+qmake display-kiosk.pro
+make
+```
+
 Configuring
------------------------
+-----------
 
 See `/usr/share/doc/display-kiosk/examples/xinitrc` for an example `~/.xinitrc`
 file. Do not forget to make it executable.
