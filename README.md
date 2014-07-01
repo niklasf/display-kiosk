@@ -5,12 +5,31 @@ Display a website in a stripped down kiosk.
 Features
 --------
 
- - **Hide the cursor**.
+ - **Hide the cursor**
+ - **hide the toolbar**, **hide the statusbar**.
  - **Scroll automatically** at configurable speed.
  - **Reload automatically** at a configurable interval. If possible this is
    done **at a good moment**, i.e. when the application is idle or autoscrolling
    has reached the end.
  - Respects system **proxy** settings.
+
+Synopsis
+--------
+
+```
+display-kiosk <url>
+    [--hide-cursor]
+    [--hide-status] [--hide-toolbar]
+    [--prevent-close] [--prevent-upload]
+    [--auto-scroll
+        [--auto-scroll-delta <pixels>]
+        [--auto-scroll-interval <milliseconds>] ]
+    [--auto-reload <seconds>]
+    [--window]
+    [--reset-text <reset-text>]
+```
+
+Have a look at the manpage or `display-kiosk --help` for details.
 
 Installation
 ------------
