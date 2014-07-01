@@ -40,7 +40,7 @@ Building from source
 --------------------
 
 ```
-sudo apt-get installl ibqt4-dev libqtwebkit-dev
+sudo apt-get install libqt4-dev libqtwebkit-dev
 qmake display-kiosk.pro
 make
 ```
