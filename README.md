@@ -1,17 +1,14 @@
 display-kiosk
 =============
-Display a website in a stripped down kiosk.
+Display a website in a stripped down kiosk. Display kiosk can:
 
-Features
---------
-
- - **Hide the cursor**
- - **hide the toolbar**, **hide the statusbar**.
+ - **Hide the cursor**.
+ - **Hide the toolbar**, **hide the statusbar**.
  - **Scroll automatically** at configurable speed.
  - **Reload automatically** at a configurable interval. If possible this is
    done **at a good moment**, i.e. when the application is idle or autoscrolling
    has reached the end.
- - Respects system **proxy** settings.
+ - Respect system **proxy** settings.
 
 Synopsis
 --------
