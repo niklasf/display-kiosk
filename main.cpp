@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     parser.addOption(resetTextOption);
 
     QCommandLineOption preventCloseOption("prevent-close",
-        QCoreApplication::translate("main", "Ignore close events. A window manager might still provide ways to kill a process or minimize a window and must be locked down seperately."));
+        QCoreApplication::translate("main", "Ignore close events. A window manager might still provide ways to kill a process or minimize a window and must be locked down separately."));
     parser.addOption(preventCloseOption);
 
     QCommandLineOption autoScrollOption("auto-scroll",
