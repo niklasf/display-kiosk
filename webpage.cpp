@@ -54,7 +54,9 @@ bool WebPage::extension(Extension extension, const ExtensionOption *option, Exte
         errorPage += "    <div style=\"margin: 30px; text-align: center; font-family: arial; font-size: 50pt;\">";
         errorPage += "      <p style=\"color: #aaa; margin: 5px;\">%1 #%2:</p>";
         errorPage += "      <p style=\"margin: 5px;\">%3</p>";
-        errorPage += "      <p style=\"margin: 10px; font-size: 100pt;\">&#9785;</p>";
+        errorPage += "      <p style=\"margin: 10px; font-size: 100pt;\">";
+        errorPage += "        <input type=\"button\" onclick=\"this.value = '&#128558;'; window.location.reload();\" value=\"&#9785;\">";
+        errorPage += "      </p>";
         errorPage += "    </div>";
         errorPage += "  </body>";
         errorPage += "</html>";
