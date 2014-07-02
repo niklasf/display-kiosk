@@ -41,8 +41,8 @@ Append the following APT lines to `/etc/apt/sources.list` or a file in
 `/etc/apt/sources.list.d/`.
 
 ```
-deb http://iserv-trg-oha.de/apt/ squeeze main
-deb-src http://iserv-trg-oha.de/apt/ squeeze main
+deb http://iserv-trg-oha.de/apt/ wheezy main
+deb-src http://iserv-trg-oha.de/apt/ wheezy main
 ```
 
 Install the package.
