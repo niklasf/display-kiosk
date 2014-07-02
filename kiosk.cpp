@@ -51,7 +51,7 @@ Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent), m_resetText(tr("Reset")), m
     // Initial page load.
     reset();
 
-    // Start scroll reload.
+    // Setup auto scroll timer.
     m_scrollTimer = new QTimer(this);
     m_scrollTimer->setInterval(5000);
     connect(m_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollTick()));

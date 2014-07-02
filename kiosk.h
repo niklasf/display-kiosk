@@ -45,7 +45,7 @@ public:
 
     bool autoScroll() const;
     void setAutoScroll(bool autoScroll);
-    
+
     int autoScrollDelta() const;
     void setAutoScrollDelta(int delta);
 
