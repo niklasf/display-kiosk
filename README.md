@@ -65,7 +65,7 @@ Configuring
 -----------
 
 See `/usr/share/doc/display-kiosk/examples/xinitrc` for an example `~/.xinitrc`
-file. Do not forget to make it executable.
+or `~/.xsession` file.
 
 For automatic startup put `su - username -c startx` in `/etc/rc.local`
 (usually before `exit 0`) and `update-rc.d rc.local defaults`. A more robust
