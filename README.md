@@ -13,53 +13,44 @@ Display a website in a stripped down kiosk. Display kiosk can:
 Synopsis
 --------
 
-```
-display-kiosk <url>
-    [--hide-cursor]
-    [--hide-status] [--hide-toolbar]
-    [--prevent-close] [--prevent-upload]
-    [--auto-scroll
-        [--auto-scroll-delta <pixels>]
-        [--auto-scroll-interval <milliseconds>] ]
-    [--auto-reload <seconds>]
-    [--window]
-    [--reset-text <reset-text>]
-```
+    display-kiosk <url>
+        [--hide-cursor]
+        [--hide-status] [--hide-toolbar]
+        [--prevent-close] [--prevent-upload]
+        [--auto-scroll
+            [--auto-scroll-delta <pixels>]
+            [--auto-scroll-interval <milliseconds>] ]
+        [--auto-reload <seconds>]
+        [--window]
+        [--reset-text <reset-text>]
 
 Have a look at the manpage or `display-kiosk --help` for details.
 
 Installation
 ------------
+
 Add the [public key for the package archive](https://iserv-trg-oha.de/apt/apt.gpg.key).
 
-```
-$ wget https://iserv-trg-oha.de/apt/apt.gpg.key
-$ sudo apt-key add apt.gpg.key
-```
+    $ wget https://iserv-trg-oha.de/apt/apt.gpg.key
+    $ sudo apt-key add apt.gpg.key
 
 Append the following APT lines to `/etc/apt/sources.list` or a file in
 `/etc/apt/sources.list.d/`.
 
-```
-deb http://iserv-trg-oha.de/apt/ wheezy main
-deb-src http://iserv-trg-oha.de/apt/ wheezy main
-```
+    deb http://iserv-trg-oha.de/apt/ wheezy main
+    deb-src http://iserv-trg-oha.de/apt/ wheezy main
 
 Install the package.
 
-```
-$ sudo apt-get update
-$ sudo apt-get install display-kiosk
-```
+    $ sudo apt-get update
+    $ sudo apt-get install display-kiosk
 
 Building from source
 --------------------
 
-```
-sudo apt-get install libqt4-dev libqtwebkit-dev
-qmake display-kiosk.pro
-make
-```
+    $ sudo apt-get install libqt4-dev libqtwebkit-dev
+    $ qmake display-kiosk.pro
+    $ make
 
 Configuring
 -----------
@@ -73,5 +64,6 @@ solution can be [nodm](http://www.enricozini.org/sw/nodm/).
 
 License
 -------
+
 display-kiosk is licensed under the GPL-3. Feel free to use, drop an issue or
 submit a pull request.
