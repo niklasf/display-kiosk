@@ -73,6 +73,5 @@ solution can be [nodm](http://www.enricozini.org/sw/nodm/).
 
 License
 -------
-display-kiosk is licensed under the GPL-3. See the
-[debian/copyright](/debian/copyright) file for details. Feel free to use, drop
-an issue or submit a pull request.
+display-kiosk is licensed under the GPL-3. Feel free to use, drop an issue or
+submit a pull request.
