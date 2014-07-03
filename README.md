@@ -1,5 +1,6 @@
 display-kiosk
 =============
+
 Display a website in a stripped down kiosk. Display kiosk can:
 
  - **Hide the cursor**.
@@ -29,7 +30,8 @@ Have a look at the manpage or `display-kiosk --help` for details.
 Installation
 ------------
 
-Add the [public key for the package archive](https://iserv-trg-oha.de/apt/apt.gpg.key).
+Add the
+[public key for the package archive](https://iserv-trg-oha.de/apt/apt.gpg.key).
 
     $ wget https://iserv-trg-oha.de/apt/apt.gpg.key
     $ sudo apt-key add apt.gpg.key
@@ -55,12 +57,13 @@ Building from source
 Configuring
 -----------
 
-See `/usr/share/doc/display-kiosk/examples/xinitrc` for an example `~/.xsession`
-or `~/.xinitrc` file.
+See `/usr/share/doc/display-kiosk/examples/xsession` for an example
+`~/.xsession` or `~/.xinitrc` file. A suggested minimal window manager is
+[nodm](http://www.enricozini.org/sw/nodm/). It just automatically starts the
+session for the user configured in `/etc/defaults/nodm`.
 
-For automatic startup put `su - username -c startx` in `/etc/rc.local`
-(usually before `exit 0`) and `update-rc.d rc.local defaults`. A more robust
-solution can be [nodm](http://www.enricozini.org/sw/nodm/).
+A poor mans solution can be `su - username -c startx` in `/etc/rc.local`
+(usually before `exit 0`) and `update-rc.d rc.local defaults`.
 
 License
 -------
