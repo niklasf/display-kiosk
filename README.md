@@ -16,7 +16,7 @@ Synopsis
     display-kiosk <url>
         [--hide-cursor]
         [--hide-status] [--hide-toolbar]
-        [--prevent-close] [--prevent-upload]
+        [--prevent-close]
         [--auto-scroll
             [--auto-scroll-delta <pixels>]
             [--auto-scroll-interval <milliseconds>] ]
