@@ -1,9 +1,9 @@
 #include <QApplication>
 #include <QNetworkProxyFactory>
+#include <QCommandLineParser>
 
 #include <stdio.h>
 
-#include "qcommandlineparser.h"
 #include "kiosk.h"
 
 int main(int argc, char *argv[])
