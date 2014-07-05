@@ -2,12 +2,12 @@ Source: display-kiosk
 Section: web
 Priority: optional
 Maintainer: Niklas Fiekas <niklas.fiekas@tu-clausthal.de>
-Build-Depends: debhelper (>= 9), qtbase5-dev, libqt5webkit5-dev
+Build-Depends: debhelper (>= 9), qtbase5-dev, libqt5opengl5-dev, libqt5webkit5-dev
 Standards-Version: 3.9.5.0
 
 Package: display-kiosk
 Architecture: any
-Depends: libqt5core5a, libqt5gui5, libqt5widgets5, libqt5network5, libqt5webkit5, ${misc:Depends},  ${shlibs:Depends}
+Depends: libqt5core5a, libqt5opengl5, libqt5gui5, libqt5widgets5, libqt5network5, libqt5webkit5, ${misc:Depends},  ${shlibs:Depends}
 Recommends: x11-xserver-utils
 Suggests: nodm
 Description: Display a website in a stripped down kiosk
