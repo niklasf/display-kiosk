@@ -1,3 +1,11 @@
+display-kiosk (0.3.2) wheezy; urgency=low
+
+  * Reload button added to error pages
+  * Documentation improvements
+  * Improved integration with nodm
+
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Tue, 22 Jul 2014 11:01:00 +0200
+
 display-kiosk (0.3.1) wheezy; urgency=low
 
   * Add error pages
