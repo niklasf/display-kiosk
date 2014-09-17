@@ -11,6 +11,10 @@ Display a website in a stripped down kiosk. Display kiosk can:
    has reached the end.
  - Respect system **proxy** settings.
 
+![Web kiosks](/photo-kiosks.jpg "Web kiosks")
+
+![Public displays](/photo-displays.jpg "Public displays")
+
 Synopsis
 --------
 
