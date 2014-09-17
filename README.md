@@ -54,7 +54,7 @@ Install the package.
 Building from source
 --------------------
 
-    $ sudo apt-get install libqt4-dev libqtwebkit-dev
+    $ sudo apt-get install qtbase5-dev libqt5opengl5-dev libqt5webkit5-dev
     $ qmake display-kiosk.pro
     $ make
 
