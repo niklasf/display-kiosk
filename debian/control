@@ -9,7 +9,7 @@ Package: display-kiosk
 Architecture: any
 Depends: libqt4-core, libqt4-gui, libqt4-network, libqt4-webkit, ${misc:Depends},  ${shlibs:Depends}
 Recommends: x11-xserver-utils
-Suggests: nodm
+Suggests: nodm ca-certificates
 Description: Display a website in a stripped down kiosk
  Display kiosk allows you to show a website fullscreen in a stripped down kiosk.
  .
