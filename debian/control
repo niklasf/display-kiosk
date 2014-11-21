@@ -7,7 +7,7 @@ Standards-Version: 3.9.5.0
 
 Package: display-kiosk
 Architecture: any
-Depends: libqt4-core, libqt4-gui, libqt4-network, libqt4-webkit, ${misc:Depends},  ${shlibs:Depends}
+Depends: ${misc:Depends},  ${shlibs:Depends}
 Recommends: x11-xserver-utils
 Suggests: nodm ca-certificates
 Description: Display a website in a stripped down kiosk
