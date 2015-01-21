@@ -10,6 +10,7 @@ Display a website in a stripped down kiosk. Display kiosk can:
    done **at a good moment**, i.e. when the application is idle or autoscrolling
    has reached the end.
  - Respect system **proxy** settings.
+ - Select a specific **CSS media type**.
 
 ![Web kiosks](/photo-kiosks.jpg "Web kiosks")
 
@@ -28,6 +29,7 @@ Synopsis
         [--auto-reload <seconds>]
         [--window]
         [--reset-text <reset-text>]
+        [--media <css-media-type>]
 
 Have a look at the manpage or `display-kiosk --help` for details.
 
@@ -54,7 +56,7 @@ Install the package.
 Building from source
 --------------------
 
-    $ sudo apt-get install libqt4-dev libqtwebkit-dev
+    $ sudo apt-get install qtbase5-dev libqt5opengl5-dev libqt5webkit5-dev
     $ qmake display-kiosk.pro
     $ make
 

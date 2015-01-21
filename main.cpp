@@ -1,9 +1,10 @@
 #include <QApplication>
 #include <QNetworkProxyFactory>
+#include <QCommandLineParser>
+#include <QWebSettings>
 
 #include <stdio.h>
 
-#include "qcommandlineparser.h"
 #include "kiosk.h"
 
 int main(int argc, char *argv[])
@@ -66,6 +67,11 @@ int main(int argc, char *argv[])
         QCoreApplication::translate("main", "Open in a window rather than fullscreen."));
     parser.addOption(windowOption);
 
+    QCommandLineOption mediaOption("media",
+        QCoreApplication::translate("main", "Overwrite the default CSS @media type."),
+        "css-media-type");
+    parser.addOption(mediaOption);
+
     parser.process(app);
 
     bool ok;
@@ -105,6 +111,11 @@ int main(int argc, char *argv[])
 
     if (parser.isSet(hideCursorOption)) {
         app.setOverrideCursor(Qt::BlankCursor);
+    }
+
+    if (parser.isSet(mediaOption)) {
+        QWebSettings::globalSettings()->setCSSMediaType(
+            parser.value(mediaOption));
     }
 
     QNetworkProxyFactory::setUseSystemConfiguration(true);

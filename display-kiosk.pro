@@ -1,10 +1,9 @@
-SOURCES = \
-    main.cpp kiosk.cpp webpage.cpp \
-    qcommandlineoption.cpp qcommandlineparser.cpp
+SOURCES += main.cpp kiosk.cpp webpage.cpp
 
-HEADERS = kiosk.h webpage.h \
-    qcommandlineoption.h qcommandlineparser.h
+HEADERS += kiosk.h webpage.h
 
-QT += core gui webkit network
+QT += core
+QT += gui widgets
+QT += network webkit webkitwidgets
 
 CONFIG += qt

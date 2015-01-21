@@ -1,3 +1,9 @@
+display-kiosk (0.3.3) jessie; urgency=low
+
+  * Add --media option
+
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Tue, 13 Jan 2014 00:37:00 +0200
+
 display-kiosk (0.3.2) wheezy; urgency=low
 
   * Reload button added to error pages
