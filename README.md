@@ -45,8 +45,8 @@ Add the
 Append the following APT lines to `/etc/apt/sources.list` or a file in
 `/etc/apt/sources.list.d/`.
 
-    deb http://iserv-trg-oha.de/apt/ wheezy main
-    deb-src http://iserv-trg-oha.de/apt/ wheezy main
+    deb http://iserv-trg-oha.de/apt/ jessie main
+    deb-src http://iserv-trg-oha.de/apt/ jessie main
 
 Install the package.
 
