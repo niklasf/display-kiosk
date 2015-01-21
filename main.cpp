@@ -2,6 +2,7 @@
 #include <QNetworkProxyFactory>
 #include <QCommandLineParser>
 #include <QWebSettings>
+#include <QDesktopWidget>
 
 #include <stdio.h>
 
@@ -134,6 +135,7 @@ int main(int argc, char *argv[])
     if (parser.isSet(windowOption)) {
         kiosk.show();
     } else {
+        kiosk.resize(QApplication::desktop()->screenGeometry(&kiosk).size());
         kiosk.showFullScreen();
     }
 
