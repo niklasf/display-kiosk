@@ -1,9 +1,11 @@
-display-kiosk (0.3.3) jessie; urgency=low
+display-kiosk (0.4.0) jessie; urgency=low
 
+  * Port to Qt 5
   * Add --media option
   * Update copyright years
+  * Bump standards version to 3.9.6 (no changes needed)
 
- -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Tue, 21 Jan 2015 19:21:00 +0200
+ -- Niklas Fiekas <niklas.fiekas@tu-clausthal.de>  Wed, 21 Jan 2015 19:21:00 +0200
 
 display-kiosk (0.3.2) wheezy; urgency=low
 

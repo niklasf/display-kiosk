@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     app.setApplicationName("display-kiosk");
-    app.setApplicationVersion("0.3.2");
+    app.setApplicationVersion("0.4.0");
 
     QCommandLineParser parser;
     parser.setApplicationDescription(
