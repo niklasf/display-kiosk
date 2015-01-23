@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     app.setApplicationName("display-kiosk");
-    app.setApplicationVersion("0.4.0");
+    app.setApplicationVersion("0.4.1");
 
     QCommandLineParser parser;
     parser.setApplicationDescription(
