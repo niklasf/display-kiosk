@@ -1,6 +1,6 @@
 display-kiosk (0.4.1) jessie; urgency=low
 
-  * Add work around for fullscreen bug. The full screen size is now used even
+  * Add workaround for fullscreen bug. The full screen size is now used even
     under nodm.
   * Enable parallel building.
 
