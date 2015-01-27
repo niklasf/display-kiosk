@@ -50,13 +50,13 @@ int main(int argc, char *argv[])
     parser.addOption(autoScrollOption);
 
     QCommandLineOption autoScrollDeltaOption("auto-scroll-delta",
-        QCoreApplication::translate("main", "Number of pixels to scroll down per step. Ignored if --auto-scroll is not given. Defaults to 300."),
-        "pixels", "300");
+        QCoreApplication::translate("main", "Number of pixels to scroll down per step. Ignored if --auto-scroll is not given. Defaults to 500."),
+        "pixels", "500");
     parser.addOption(autoScrollDeltaOption);
 
     QCommandLineOption autoScrollIntervalOption("auto-scroll-interval",
-        QCoreApplication::translate("main", "Milliseconds to wait between auto scrolling steps. Ignored if --auto-scroll is not given. Defaults to 5000."),
-        "millis", "5000");
+        QCoreApplication::translate("main", "Milliseconds to wait between auto scrolling steps. Ignored if --auto-scroll is not given. Defaults to 8000."),
+        "millis", "8000");
     parser.addOption(autoScrollIntervalOption);
 
     QCommandLineOption autoReloadOption("auto-reload",

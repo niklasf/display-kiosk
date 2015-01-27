@@ -4,7 +4,7 @@ Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent), m_resetText(tr("Reset")), m
 {
     // Initialize members.
     m_preventClose = false;
-    m_autoScrollDelta = 300;
+    m_autoScrollDelta = 500;
     m_autoReload = 0;
 
     // Create the status bar.
@@ -53,7 +53,7 @@ Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent), m_resetText(tr("Reset")), m
 
     // Setup auto scroll timer.
     m_scrollTimer = new QTimer(this);
-    m_scrollTimer->setInterval(5000);
+    m_scrollTimer->setInterval(8000);
     connect(m_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollTick()));
 
     // Start reload countdown.
