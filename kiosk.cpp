@@ -65,6 +65,10 @@ Kiosk::Kiosk(QWidget *parent) : QMainWindow(parent), m_resetText(tr("Reset")), m
     this->installEventFilter(this);
     m_toolBar->installEventFilter(this);
     m_view->installEventFilter(this);
+
+    // Listen for network configuration changes.
+    m_networkConfigurationManager = new QNetworkConfigurationManager(this);
+    connect(m_networkConfigurationManager, SIGNAL(onlineStateChanged(bool)), this, SLOT(onlineStateChanged(bool)));
 }
 
 /* Kiosk::~Kiosk()
@@ -101,6 +105,13 @@ void Kiosk::reset()
     }
 
     notIdle();
+}
+
+void Kiosk::onlineStateChanged(bool isOnline)
+{
+    if (isOnline) {
+        reset();
+    }
 }
 
 void Kiosk::notIdle()

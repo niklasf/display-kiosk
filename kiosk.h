@@ -12,6 +12,7 @@
 #include <QStyle>
 #include <QEvent>
 #include <QCloseEvent>
+#include <QNetworkConfigurationManager>
 
 #include "webpage.h"
 
@@ -70,6 +71,7 @@ private slots:
     void reloadTick();
     void scrollTick();
     void addPage(WebPage *page);
+    void onlineStateChanged(bool isOnline);
 
 private:
     QAction *m_resetAction;
@@ -79,6 +81,8 @@ private:
     QProgressBar *m_progressBar;
     QToolBar *m_toolBar;
     QWebView *m_view;
+
+    QNetworkConfigurationManager *m_networkConfigurationManager;
 
     QTimer *m_reloadTimer;
     QTimer *m_scrollTimer;
